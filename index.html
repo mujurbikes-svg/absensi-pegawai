@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Pegawai</title>
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="description" content="Sistem Absensi Pegawai Offline">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #34495e;
+        }
+        
+        button.secondary {
+            background-color: var(--secondary);
+        }
+        
+        button.secondary:hover {
+            background-color: #219653;
+        }
+        
+        button.danger {
+            background-color: var(--danger);
+        }
+        
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        
+        button.warning {
+            background-color: var(--warning);
+        }
+        
+        button.warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .card-content {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .card-content.active {
+            display: block;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .status-hadir {
+            color: var(--secondary);
+        }
+        
+        .status-izin {
+            color: var(--warning);
+        }
+        
+        .status-bolos {
+            color: var(--danger);
+        }
+        
+        .status-telat {
+            color: var(--warning);
+        }
+        
+        .status-libur {
+            color: #3498db;
+        }
+        
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .log-info {
+            flex: 1;
+        }
+        
+        .log-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .summary-item {
+            background-color: var(--light);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .backup-section {
+            margin-top: 20px;
+        }
+        
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 480px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .report-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+            }
+            
+            .backup-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Absensi Pegawai</h1>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="absen">Absen</div>
+            <div class="tab" data-tab="data-master">Data Master</div>
+            <div class="tab" data-tab="lembur">Lembur</div>
+            <div class="tab" data-tab="cek-absen">Cek Absen</div>
+            <div class="tab" data-tab="laporan">Laporan</div>
+        </div>
+        
+        <!-- Tab Absen -->
+        <div id="absen" class="tab-content active">
+            <h2>Form Absen</h2>
+            <div class="form-group">
+                <label for="absen-tanggal">Tanggal Absen</label>
+                <input type="date" id="absen-tanggal">
+            </div>
+            <div class="form-group">
+                <label for="absen-pegawai">Nama Pegawai</label>
+                <select id="absen-pegawai">
+                    <option value="">Pilih Pegawai</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="absen-shift">Shift</label>
+                <select id="absen-shift">
+                    <option value="">Pilih Shift</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="absen-jam">Jam Masuk</label>
+                <input type="time" id="absen-jam">
+            </div>
+            <button id="simpan-absen" class="secondary">Simpan Absen</button>
+            
+            <h3 style="margin-top: 20px;">Log Absen Hari Ini</h3>
+            <div id="log-absen-hari-ini"></div>
+        </div>
+        
+        <!-- Tab Data Master -->
+        <div id="data-master" class="tab-content">
+            <h2>Data Master</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Data Pegawai</div>
+                    <button class="action-btn" id="toggle-pegawai">Edit</button>
+                </div>
+                <div class="card-content" id="pegawai-content">
+                    <div class="form-group">
+                        <label for="pegawai-nama">Nama Pegawai</label>
+                        <input type="text" id="pegawai-nama" placeholder="Masukkan nama pegawai">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn secondary" id="tambah-pegawai">Tambah</button>
+                        <button class="action-btn danger" id="hapus-pegawai">Hapus</button>
+                    </div>
+                    <div id="daftar-pegawai" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Data Shift</div>
+                    <button class="action-btn" id="toggle-shift">Edit</button>
+                </div>
+                <div class="card-content" id="shift-content">
+                    <div class="form-group">
+                        <label for="shift-nama">Nama Shift</label>
+                        <input type="text" id="shift-nama" placeholder="Masukkan nama shift">
+                    </div>
+                    <div class="form-group">
+                        <label for="shift-jam">Jam Masuk</label>
+                        <input type="time" id="shift-jam">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn secondary" id="tambah-shift">Tambah</button>
+                        <button class="action-btn danger" id="hapus-shift">Hapus</button>
+                    </div>
+                    <div id="daftar-shift" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Tanggal Libur</div>
+                    <button class="action-btn" id="toggle-libur">Edit</button>
+                </div>
+                <div class="card-content" id="libur-content">
+                    <div class="form-group">
+                        <label for="libur-tanggal">Tanggal Libur</label>
+                        <input type="date" id="libur-tanggal">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn secondary" id="tambah-libur">Tambah</button>
+                        <button class="action-btn danger" id="hapus-libur">Hapus</button>
+                    </div>
+                    <div id="daftar-libur" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <!-- Backup & Restore Section -->
+            <div class="card backup-section">
+                <div class="card-header">
+                    <div class="card-title">Backup & Restore Data</div>
+                </div>
+                <div class="card-content active">
+                    <p>Backup dan restore semua data absensi Anda untuk keamanan atau migrasi perangkat.</p>
+                    <div class="backup-buttons">
+                        <button class="secondary" id="backup-data">Backup Data</button>
+                        <button class="warning" id="restore-data">Restore Data</button>
+                        <button class="danger" id="reset-data">Reset Semua Data</button>
+                    </div>
+                    <div id="backup-status" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+            
+            <button id="simpan-data-master" class="secondary" style="margin-top: 15px;">Simpan Perubahan</button>
+        </div>
+        
+        <!-- Tab Lembur -->
+        <div id="lembur" class="tab-content">
+            <h2>Form Lembur</h2>
+            <div class="form-group">
+                <label for="lembur-tanggal">Tanggal Lembur</label>
+                <input type="date" id="lembur-tanggal">
+            </div>
+            <div class="form-group">
+                <label for="lembur-pegawai">Nama Pegawai</label>
+                <select id="lembur-pegawai">
+                    <option value="">Pilih Pegawai</option>
+                </select>
+            </div>
+            <button id="simpan-lembur" class="secondary">Simpan Lembur</button>
+        </div>
+        
+        <!-- Tab Cek Absen -->
+        <div id="cek-absen" class="tab-content">
+            <h2>Cek Data Absen</h2>
+            <div class="form-group">
+                <label for="cek-tanggal">Pilih Tanggal</label>
+                <input type="date" id="cek-tanggal">
+            </div>
+            <button id="tampilkan-absen" class="secondary">Tampilkan Absen</button>
+            
+            <div id="log-absen-tanggal" style="margin-top: 15px;"></div>
+        </div>
+        
+        <!-- Tab Laporan -->
+        <div id="laporan" class="tab-content">
+            <h2>Laporan Absen</h2>
+            <div class="form-group">
+                <label for="laporan-pegawai">Nama Pegawai</label>
+                <select id="laporan-pegawai">
+                    <option value="">Pilih Pegawai</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="laporan-dari">Dari Tanggal</label>
+                <input type="date" id="laporan-dari">
+            </div>
+            <div class="form-group">
+                <label for="laporan-sampai">Sampai Tanggal</label>
+                <input type="date" id="laporan-sampai">
+            </div>
+            <button id="buat-laporan" class="secondary">Buat Laporan</button>
+            
+            <div id="ringkasan-laporan" style="margin-top: 15px;"></div>
+            <div id="detail-laporan" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Absen -->
+    <div id="modal-edit-absen" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Data Absen</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="edit-pegawai">Nama Pegawai</label>
+                <select id="edit-pegawai">
+                    <option value="">Pilih Pegawai</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-shift">Shift</label>
+                <select id="edit-shift">
+                    <option value="">Pilih Shift</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-jam">Jam Masuk</label>
+                <input type="time" id="edit-jam">
+            </div>
+            <button id="simpan-edit-absen" class="secondary">Simpan Perubahan</button>
+        </div>
+    </div>
+
+    <!-- Modal Restore Data -->
+    <div id="modal-restore" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Restore Data</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="restore-file">Pilih File Backup</label>
+                <input type="file" id="restore-file" accept=".json">
+            </div>
+            <div class="form-group">
+                <p><strong>Peringatan:</strong> Restore data akan menggantikan semua data yang ada saat ini. Pastikan Anda sudah membackup data terbaru.</p>
+            </div>
+            <button id="proses-restore" class="warning">Proses Restore</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage menggunakan localStorage
+        const STORAGE_KEYS = {
+            PEGAWAI: 'absen_pegawai',
+            SHIFT: 'absen_shift',
+            LIBUR: 'absen_libur',
+            ABSEN: 'absen_data',
+            LEMBUR: 'absen_lembur'
+        };
+
+        // Variabel global untuk menyimpan ID absen yang sedang diedit
+        let absenIdSedangDiedit = null;
+
+        // Inisialisasi data jika belum ada
+        function initializeData() {
+            if (!localStorage.getItem(STORAGE_KEYS.PEGAWAI)) {
+                localStorage.setItem(STORAGE_KEYS.PEGAWAI, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.SHIFT)) {
+                localStorage.setItem(STORAGE_KEYS.SHIFT, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.LIBUR)) {
+                localStorage.setItem(STORAGE_KEYS.LIBUR, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.ABSEN)) {
+                localStorage.setItem(STORAGE_KEYS.ABSEN, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.LEMBUR)) {
+                localStorage.setItem(STORAGE_KEYS.LEMBUR, JSON.stringify([]));
+            }
+        }
+
+        // Fungsi untuk mendapatkan data dari localStorage
+        function getData(key) {
+            return JSON.parse(localStorage.getItem(key)) || [];
+        }
+
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // Fungsi untuk backup semua data
+        function backupData() {
+            const allData = {};
+            Object.keys(STORAGE_KEYS).forEach(key => {
+                allData[STORAGE_KEYS[key]] = getData(STORAGE_KEYS[key]);
+            });
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const filename = `backup_absensi_${timestamp}.json`;
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            // Buat URL untuk download
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            document.getElementById('backup-status').innerHTML = 
+                '<p class="status-hadir">Backup berhasil! File telah didownload.</p>';
+        }
+
+        // Fungsi untuk restore data dari file
+        function restoreData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validasi struktur data
+                    const isValid = Object.keys(STORAGE_KEYS).every(key => 
+                        data.hasOwnProperty(STORAGE_KEYS[key])
+                    );
+                    
+                    if (!isValid) {
+                        alert('File backup tidak valid!');
+                        return;
+                    }
+                    
+                    // Simpan data ke localStorage
+                    Object.keys(STORAGE_KEYS).forEach(key => {
+                        saveData(STORAGE_KEYS[key], data[STORAGE_KEYS[key]]);
+                    });
+                    
+                    document.getElementById('backup-status').innerHTML = 
+                        '<p class="status-hadir">Restore berhasil! Data telah dipulihkan.</p>';
+                    
+                    // Tutup modal
+                    document.getElementById('modal-restore').style.display = 'none';
+                    
+                    // Refresh tampilan
+                    location.reload();
+                    
+                } catch (error) {
+                    alert('Error membaca file backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Fungsi untuk reset semua data
+        function resetAllData() {
+            if (confirm('APAKAH ANDA YAKIN?\n\nSemua data akan dihapus permanen termasuk:\n- Data pegawai\n- Data shift\n- Tanggal libur\n- Data absensi\n- Data lembur\n\nTindakan ini tidak dapat dibatalkan!')) {
+                Object.keys(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(STORAGE_KEYS[key]);
+                });
+                initializeData();
+                alert('Semua data telah direset!');
+                location.reload();
+            }
+        }
+
+        // Fungsi untuk memuat data pegawai ke dropdown
+        function loadPegawaiDropdown(selectElement) {
+            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+            selectElement.innerHTML = '<option value="">Pilih Pegawai</option>';
+            
+            pegawai.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = p.nama;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Fungsi untuk memuat data shift ke dropdown
+        function loadShiftDropdown(selectElement) {
+            const shift = getData(STORAGE_KEYS.SHIFT);
+            selectElement.innerHTML = '<option value="">Pilih Shift</option>';
+            
+            shift.forEach(s => {
+                const option = document.createElement('option');
+                option.value = s.id;
+                option.textContent = `${s.nama} (${s.jam})`;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Fungsi untuk menampilkan daftar pegawai
+        function displayPegawaiList() {
+            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+            const container = document.getElementById('daftar-pegawai');
+            container.innerHTML = '';
+            
+            pegawai.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <div class="log-info">
+                        <strong>${p.nama}</strong>
+                    </div>
+                    <div class="log-actions">
+                        <input type="radio" name="selected-pegawai" value="${p.id}">
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Fungsi untuk menampilkan daftar shift
+        function displayShiftList() {
+            const shift = getData(STORAGE_KEYS.SHIFT);
+            const container = document.getElementById('daftar-shift');
+            container.innerHTML = '';
+            
+            shift.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <div class="log-info">
+                        <strong>${s.nama}</strong> - ${s.jam}
+                    </div>
+                    <div class="log-actions">
+                        <input type="radio" name="selected-shift" value="${s.id}">
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Fungsi untuk menampilkan daftar tanggal libur
+        function displayLiburList() {
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            const container = document.getElementById('daftar-libur');
+            container.innerHTML = '';
+            
+            libur.forEach(l => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <div class="log-info">
+                        <strong>${l}</strong>
+                    </div>
+                    <div class="log-actions">
+                        <input type="radio" name="selected-libur" value="${l}">
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Fungsi untuk menghitung keterlambatan
+        function hitungKeterlambatan(jamAbsen, jamShift) {
+            // Konversi jam ke menit
+            const [jamA, menitA] = jamAbsen.split(':').map(Number);
+            const [jamS, menitS] = jamShift.split(':').map(Number);
+            
+            const totalMenitAbsen = jamA * 60 + menitA;
+            const totalMenitShift = jamS * 60 + menitS;
+            
+            // Jika absen lebih dari 5 menit setelah jam shift
+            if (totalMenitAbsen > totalMenitShift + 5) {
+                return totalMenitAbsen - totalMenitShift;
+            }
+            
+            return 0; // Tidak terlambat
+        }
+
+        // Fungsi untuk menentukan status absen
+        function tentukanStatus(tanggal, jamAbsen, jamShift) {
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            
+            // Jika tanggal termasuk libur
+            if (libur.includes(tanggal)) {
+                return { status: 'Hadir (Libur)', keterlambatan: 0 };
+            }
+            
+            // Hitung keterlambatan
+            const keterlambatan = hitungKeterlambatan(jamAbsen, jamShift);
+            
+            // Jika ada keterlambatan
+            if (keterlambatan > 0) {
+                return { status: 'Hadir (Terlambat)', keterlambatan };
+            }
+            
+            // Jika tidak ada keterlambatan dan sudah absen, status Hadir
+            return { status: 'Hadir', keterlambatan: 0 };
+        }
+
+        // Fungsi untuk menampilkan log absen berdasarkan tanggal dalam bentuk tabel
+        function displayLogAbsen(tanggal, containerId) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+            const shift = getData(STORAGE_KEYS.SHIFT);
+            
+            const absenHariIni = absen.filter(a => a.tanggal === tanggal);
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (absenHariIni.length === 0) {
+                container.innerHTML = '<p>Tidak ada data absen untuk tanggal ini.</p>';
+                return;
+            }
+            
+            // Buat tabel
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Nama Pegawai</th>
+                        <th>Shift</th>
+                        <th>Jam Masuk</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+            
+            const tbody = table.querySelector('tbody');
+            
+            absenHariIni.forEach(a => {
+                const p = pegawai.find(p => p.id === a.pegawaiId);
+                const s = shift.find(s => s.id === a.shiftId);
+                
+                if (!p || !s) return;
+                
+                let statusClass = '';
+                if (a.status.includes('Hadir')) {
+                    if (a.status.includes('Libur')) {
+                        statusClass = 'status-libur';
+                    } else {
+                        statusClass = 'status-hadir';
+                    }
+                } else if (a.status.includes('Izin')) statusClass = 'status-izin';
+                else if (a.status.includes('Bolos')) statusClass = 'status-bolos';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${p.nama}</td>
+                    <td>${s.nama} (${s.jam})</td>
+                    <td>${a.jam}</td>
+                    <td class="${statusClass}">${a.status} ${a.keterlambatan > 0 ? `(${a.keterlambatan} menit terlambat)` : ''}</td>
+                    <td>
+                        <button class="action-btn" onclick="bukaModalEditAbsen('${a.id}')">Edit</button>
+                        <button class="action-btn danger" onclick="hapusAbsen('${a.id}', '${tanggal}', '${containerId}')">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            container.appendChild(table);
+        }
+
+        // Fungsi untuk membuka modal edit absen
+        function bukaModalEditAbsen(id) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const dataAbsen = absen.find(a => a.id === id);
+            
+            if (!dataAbsen) return;
+            
+            // Simpan ID absen yang sedang diedit
+            absenIdSedangDiedit = id;
+            
+            // Isi form dengan data absen yang akan diedit
+            document.getElementById('edit-pegawai').value = dataAbsen.pegawaiId;
+            document.getElementById('edit-shift').value = dataAbsen.shiftId;
+            document.getElementById('edit-jam').value = dataAbsen.jam;
+            
+            // Tampilkan modal
+            document.getElementById('modal-edit-absen').style.display = 'flex';
+        }
+
+        // Fungsi untuk menghitung izin dan bolos dalam periode
+        function hitungIzinDanBolos(idPegawai, dari, sampai) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            
+            let totalIzin = 0;
+            let totalBolos = 0;
+            let totalHadirLibur = 0;
+            
+            const startDate = new Date(dari);
+            const endDate = new Date(sampai);
+            const currentDate = new Date(startDate);
+            
+            // Loop melalui setiap hari dalam periode
+            while (currentDate <= endDate) {
+                const tanggal = currentDate.toISOString().split('T')[0];
+                const hari = currentDate.getDay(); // 0=Minggu, 1=Senin, ..., 6=Sabtu
+                
+                // Cek apakah tanggal termasuk libur
+                const isLibur = libur.includes(tanggal);
+                
+                // Cek apakah pegawai absen di tanggal ini
+                const sudahAbsen = absen.some(a => a.pegawaiId === idPegawai && a.tanggal === tanggal);
+                
+                if (isLibur) {
+                    // Jika hari libur, hitung sebagai Hadir (Libur) meskipun tidak absen
+                    totalHadirLibur++;
+                } else if (!sudahAbsen) {
+                    // Jika tidak absen dan bukan hari libur
+                    if (hari >= 1 && hari <= 5) { // Weekday (Senin-Jumat)
+                        totalIzin++;
+                    } else { // Weekend (Sabtu-Minggu)
+                        totalBolos++;
+                    }
+                }
+                
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            return { totalIzin, totalBolos, totalHadirLibur };
+        }
+
+        // Fungsi untuk membuat laporan
+        function buatLaporan(idPegawai, dari, sampai) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const lembur = getData(STORAGE_KEYS.LEMBUR);
+            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+            const shift = getData(STORAGE_KEYS.SHIFT);
+            
+            const absenPegawai = absen.filter(a => 
+                a.pegawaiId === idPegawai && 
+                a.tanggal >= dari && 
+                a.tanggal <= sampai
+            );
+            
+            const lemburPegawai = lembur.filter(l => 
+                l.pegawaiId === idPegawai && 
+                l.tanggal >= dari && 
+                l.tanggal <= sampai
+            );
+            
+            // Hitung total hadir dan keterlambatan dari data absen
+            let totalHadir = 0;
+            let totalKeterlambatan = 0;
+            let totalTerlambat = 0;
+            
+            absenPegawai.forEach(a => {
+                if (a.status.includes('Hadir')) {
+                    totalHadir++;
+                    if (a.keterlambatan > 0) {
+                        totalKeterlambatan += a.keterlambatan;
+                        totalTerlambat++;
+                    }
+                }
+            });
+            
+            // Hitung izin, bolos, dan hadir libur
+            const { totalIzin, totalBolos, totalHadirLibur } = hitungIzinDanBolos(idPegawai, dari, sampai);
+            
+            // Tambahkan hadir libur ke total hadir
+            totalHadir += totalHadirLibur;
+            
+            // Total lembur dihitung berdasarkan jumlah hari lembur
+            const totalLembur = lemburPegawai.length;
+            
+            const ringkasanContainer = document.getElementById('ringkasan-laporan');
+            ringkasanContainer.innerHTML = `
+                <h3>Ringkasan Laporan</h3>
+                <div class="report-summary">
+                    <div class="summary-item">
+                        <div>Total Hadir</div>
+                        <div class="summary-value">${totalHadir}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div>Total Izin</div>
+                        <div class="summary-value">${totalIzin}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div>Total Bolos</div>
+                        <div class="summary-value">${totalBolos}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div>Total Lembur (hari)</div>
+                        <div class="summary-value">${totalLembur}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div>Total Keterlambatan (menit)</div>
+                        <div class="summary-value">${totalKeterlambatan}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div>Total Terlambat (hari)</div>
+                        <div class="summary-value">${totalTerlambat}</div>
+                    </div>
+                </div>
+            `;
+            
+            const detailContainer = document.getElementById('detail-laporan');
+            detailContainer.innerHTML = '<h3>Detail Absen</h3>';
+            
+            // Gabungkan data absen yang sudah ada dengan data hadir libur
+            const semuaDataAbsen = [...absenPegawai];
+            
+            // Tambahkan entri untuk hari libur yang tidak diabsen
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            const startDate = new Date(dari);
+            const endDate = new Date(sampai);
+            const currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                const tanggal = currentDate.toISOString().split('T')[0];
+                
+                // Jika tanggal libur dan tidak ada absen untuk tanggal ini
+                if (libur.includes(tanggal) && 
+                    !absenPegawai.some(a => a.tanggal === tanggal && a.pegawaiId === idPegawai)) {
+                    
+                    semuaDataAbsen.push({
+                        tanggal: tanggal,
+                        pegawaiId: idPegawai,
+                        status: 'Hadir (Libur)',
+                        keterlambatan: 0,
+                        jam: '-'
+                    });
+                }
+                
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Urutkan data berdasarkan tanggal
+            semuaDataAbsen.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+            
+            if (semuaDataAbsen.length === 0) {
+                detailContainer.innerHTML += '<p>Tidak ada data absen untuk periode ini.</p>';
+                return;
+            }
+            
+            // Buat tabel untuk detail absen
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Shift</th>
+                        <th>Jam Masuk</th>
+                        <th>Status</th>
+                        <th>Keterlambatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            `;
+            
+            const tbody = table.querySelector('tbody');
+            
+            semuaDataAbsen.forEach(a => {
+                const s = shift.find(s => s.id === a.shiftId);
+                
+                let statusClass = '';
+                if (a.status.includes('Hadir')) {
+                    if (a.status.includes('Libur')) {
+                        statusClass = 'status-libur';
+                    } else {
+                        statusClass = 'status-hadir';
+                    }
+                } else if (a.status.includes('Izin')) statusClass = 'status-izin';
+                else if (a.status.includes('Bolos')) statusClass = 'status-bolos';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${a.tanggal}</td>
+                    <td>${s ? s.nama : '-'}</td>
+                    <td>${a.jam || '-'}</td>
+                    <td class="${statusClass}">${a.status}</td>
+                    <td>${a.keterlambatan > 0 ? `${a.keterlambatan} menit` : '-'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            detailContainer.appendChild(table);
+        }
+
+        // Fungsi untuk menghapus absen
+        function hapusAbsen(id, tanggal, containerId) {
+            if (confirm('Apakah Anda yakin ingin menghapus data absen ini?')) {
+                const absen = getData(STORAGE_KEYS.ABSEN);
+                const updatedAbsen = absen.filter(a => a.id !== id);
+                saveData(STORAGE_KEYS.ABSEN, updatedAbsen);
+                
+                // Refresh tampilan
+                displayLogAbsen(tanggal, containerId);
+                alert('Data absen berhasil dihapus!');
+            }
+        }
+
+        // Event listener ketika DOM selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Set tanggal default ke hari ini
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('absen-tanggal').value = today;
+            document.getElementById('lembur-tanggal').value = today;
+            document.getElementById('cek-tanggal').value = today;
+            document.getElementById('laporan-dari').value = today;
+            document.getElementById('laporan-sampai').value = today;
+            
+            // Load dropdown
+            loadPegawaiDropdown(document.getElementById('absen-pegawai'));
+            loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
+            loadPegawaiDropdown(document.getElementById('laporan-pegawai'));
+            loadPegawaiDropdown(document.getElementById('edit-pegawai'));
+            loadShiftDropdown(document.getElementById('absen-shift'));
+            loadShiftDropdown(document.getElementById('edit-shift'));
+            
+            // Tampilkan daftar
+            displayPegawaiList();
+            displayShiftList();
+            displayLiburList();
+            
+            // Tampilkan log absen hari ini
+            displayLogAbsen(today, 'log-absen-hari-ini');
+            
+            // Tab navigation
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Jika tab data master, refresh daftar dan tutup mode edit
+                    if (tabId === 'data-master') {
+                        displayPegawaiList();
+                        displayShiftList();
+                        displayLiburList();
+                        
+                        // Tutup semua mode edit
+                        document.getElementById('pegawai-content').classList.remove('active');
+                        document.getElementById('shift-content').classList.remove('active');
+                        document.getElementById('libur-content').classList.remove('active');
+                    }
+                });
+            });
+            
+            // Toggle edit mode untuk data master
+            document.getElementById('toggle-pegawai').addEventListener('click', function() {
+                document.getElementById('pegawai-content').classList.toggle('active');
+            });
+            
+            document.getElementById('toggle-shift').addEventListener('click', function() {
+                document.getElementById('shift-content').classList.toggle('active');
+            });
+            
+            document.getElementById('toggle-libur').addEventListener('click', function() {
+                document.getElementById('libur-content').classList.toggle('active');
+            });
+            
+            // Backup & Restore functionality
+            document.getElementById('backup-data').addEventListener('click', backupData);
+            
+            document.getElementById('restore-data').addEventListener('click', function() {
+                document.getElementById('modal-restore').style.display = 'flex';
+            });
+            
+            document.getElementById('reset-data').addEventListener('click', resetAllData);
+            
+            document.getElementById('proses-restore').addEventListener('click', function() {
+                const fileInput = document.getElementById('restore-file');
+                if (fileInput.files.length === 0) {
+                    alert('Pilih file backup terlebih dahulu!');
+                    return;
+                }
+                restoreData(fileInput.files[0]);
+            });
+            
+            // Simpan absen
+            document.getElementById('simpan-absen').addEventListener('click', function() {
+                const tanggal = document.getElementById('absen-tanggal').value;
+                const pegawaiId = document.getElementById('absen-pegawai').value;
+                const shiftId = document.getElementById('absen-shift').value;
+                const jam = document.getElementById('absen-jam').value;
+                
+                if (!tanggal || !pegawaiId || !shiftId || !jam) {
+                    alert('Harap lengkapi semua field!');
+                    return;
+                }
+                
+                // Cek apakah pegawai sudah absen di tanggal yang sama
+                const absen = getData(STORAGE_KEYS.ABSEN);
+                const sudahAbsen = absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal);
+                
+                if (sudahAbsen) {
+                    alert('Pegawai ini sudah mengabsen hari ini!');
+                    return;
+                }
+                
+                const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
+                if (!shift) {
+                    alert('Shift tidak valid!');
+                    return;
+                }
+                
+                // Tentukan status
+                const { status, keterlambatan } = tentukanStatus(tanggal, jam, shift.jam);
+                
+                // Simpan absen
+                const newAbsen = {
+                    id: Date.now().toString(),
+                    tanggal,
+                    pegawaiId,
+                    shiftId,
+                    jam,
+                    status,
+                    keterlambatan
+                };
+                
+                absen.push(newAbsen);
+                saveData(STORAGE_KEYS.ABSEN, absen);
+                
+                alert('Absen berhasil disimpan!');
+                
+                // Reset form
+                document.getElementById('absen-jam').value = '';
+                
+                // Refresh log
+                displayLogAbsen(tanggal, 'log-absen-hari-ini');
+            });
+            
+            // Tambah pegawai
+            document.getElementById('tambah-pegawai').addEventListener('click', function() {
+                const nama = document.getElementById('pegawai-nama').value;
+                
+                if (!nama) {
+                    alert('Harap isi nama pegawai!');
+                    return;
+                }
+                
+                const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+                const newPegawai = {
+                    id: Date.now().toString(),
+                    nama
+                };
+                
+                pegawai.push(newPegawai);
+                saveData(STORAGE_KEYS.PEGAWAI, pegawai);
+                
+                alert('Pegawai berhasil ditambahkan!');
+                
+                // Reset form
+                document.getElementById('pegawai-nama').value = '';
+                
+                // Refresh dropdown dan daftar
+                loadPegawaiDropdown(document.getElementById('absen-pegawai'));
+                loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
+                loadPegawaiDropdown(document.getElementById('laporan-pegawai'));
+                loadPegawaiDropdown(document.getElementById('edit-pegawai'));
+                displayPegawaiList();
+            });
+            
+            // Hapus pegawai
+            document.getElementById('hapus-pegawai').addEventListener('click', function() {
+                const selected = document.querySelector('input[name="selected-pegawai"]:checked');
+                
+                if (!selected) {
+                    alert('Pilih pegawai yang akan dihapus!');
+                    return;
+                }
+                
+                if (confirm('Apakah Anda yakin ingin menghapus pegawai ini?')) {
+                    const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+                    const updatedPegawai = pegawai.filter(p => p.id !== selected.value);
+                    saveData(STORAGE_KEYS.PEGAWAI, updatedPegawai);
+                    
+                    // Refresh dropdown dan daftar
+                    loadPegawaiDropdown(document.getElementById('absen-pegawai'));
+                    loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
+                    loadPegawaiDropdown(document.getElementById('laporan-pegawai'));
+                    loadPegawaiDropdown(document.getElementById('edit-pegawai'));
+                    displayPegawaiList();
+                    
+                    alert('Pegawai berhasil dihapus!');
+                }
+            });
+            
+            // Tambah shift
+            document.getElementById('tambah-shift').addEventListener('click', function() {
+                const nama = document.getElementById('shift-nama').value;
+                const jam = document.getElementById('shift-jam').value;
+                
+                if (!nama || !jam) {
+                    alert('Harap lengkapi semua field!');
+                    return;
+                }
+                
+                const shift = getData(STORAGE_KEYS.SHIFT);
+                const newShift = {
+                    id: Date.now().toString(),
+                    nama,
+                    jam
+                };
+                
+                shift.push(newShift);
+                saveData(STORAGE_KEYS.SHIFT, shift);
+                
+                alert('Shift berhasil ditambahkan!');
+                
+                // Reset form
+                document.getElementById('shift-nama').value = '';
+                document.getElementById('shift-jam').value = '';
+                
+                // Refresh dropdown dan daftar
+                loadShiftDropdown(document.getElementById('absen-shift'));
+                loadShiftDropdown(document.getElementById('edit-shift'));
+                displayShiftList();
+            });
+            
+            // Hapus shift
+            document.getElementById('hapus-shift').addEventListener('click', function() {
+                const selected = document.querySelector('input[name="selected-shift"]:checked');
+                
+                if (!selected) {
+                    alert('Pilih shift yang akan dihapus!');
+                    return;
+                }
+                
+                if (confirm('Apakah Anda yakin ingin menghapus shift ini?')) {
+                    const shift = getData(STORAGE_KEYS.SHIFT);
+                    const updatedShift = shift.filter(s => s.id !== selected.value);
+                    saveData(STORAGE_KEYS.SHIFT, updatedShift);
+                    
+                    // Refresh dropdown dan daftar
+                    loadShiftDropdown(document.getElementById('absen-shift'));
+                    loadShiftDropdown(document.getElementById('edit-shift'));
+                    displayShiftList();
+                    
+                    alert('Shift berhasil dihapus!');
+                }
+            });
+            
+            // Tambah tanggal libur
+            document.getElementById('tambah-libur').addEventListener('click', function() {
+                const tanggal = document.getElementById('libur-tanggal').value;
+                
+                if (!tanggal) {
+                    alert('Harap pilih tanggal!');
+                    return;
+                }
+                
+                const libur = getData(STORAGE_KEYS.LIBUR);
+                
+                if (libur.includes(tanggal)) {
+                    alert('Tanggal ini sudah tercatat sebagai libur!');
+                    return;
+                }
+                
+                libur.push(tanggal);
+                saveData(STORAGE_KEYS.LIBUR, libur);
+                
+                alert('Tanggal libur berhasil ditambahkan!');
+                
+                // Reset form
+                document.getElementById('libur-tanggal').value = '';
+                
+                // Refresh daftar
+                displayLiburList();
+            });
+            
+            // Hapus tanggal libur
+            document.getElementById('hapus-libur').addEventListener('click', function() {
+                const selected = document.querySelector('input[name="selected-libur"]:checked');
+                
+                if (!selected) {
+                    alert('Pilih tanggal libur yang akan dihapus!');
+                    return;
+                }
+                
+                if (confirm('Apakah Anda yakin ingin menghapus tanggal libur ini?')) {
+                    const libur = getData(STORAGE_KEYS.LIBUR);
+                    const updatedLibur = libur.filter(l => l !== selected.value);
+                    saveData(STORAGE_KEYS.LIBUR, updatedLibur);
+                    
+                    // Refresh daftar
+                    displayLiburList();
+                    
+                    alert('Tanggal libur berhasil dihapus!');
+                }
+            });
+            
+            // Simpan data master
+            document.getElementById('simpan-data-master').addEventListener('click', function() {
+                // Tutup semua mode edit
+                document.getElementById('pegawai-content').classList.remove('active');
+                document.getElementById('shift-content').classList.remove('active');
+                document.getElementById('libur-content').classList.remove('active');
+                
+                alert('Perubahan berhasil disimpan!');
+            });
+            
+            // Simpan lembur
+            document.getElementById('simpan-lembur').addEventListener('click', function() {
+                const tanggal = document.getElementById('lembur-tanggal').value;
+                const pegawaiId = document.getElementById('lembur-pegawai').value;
+                
+                if (!tanggal || !pegawaiId) {
+                    alert('Harap lengkapi semua field!');
+                    return;
+                }
+                
+                // Cek apakah sudah absen di tanggal yang sama
+                const absen = getData(STORAGE_KEYS.ABSEN);
+                const sudahAbsen = absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal);
+                
+                if (!sudahAbsen) {
+                    alert('Pegawai belum absen di tanggal ini!');
+                    return;
+                }
+                
+                // Cek apakah sudah ada lembur di tanggal yang sama
+                const lembur = getData(STORAGE_KEYS.LEMBUR);
+                const sudahLembur = lembur.some(l => l.pegawaiId === pegawaiId && l.tanggal === tanggal);
+                
+                if (sudahLembur) {
+                    alert('Pegawai sudah tercatat lembur di tanggal ini!');
+                    return;
+                }
+                
+                // Simpan lembur
+                const newLembur = {
+                    id: Date.now().toString(),
+                    tanggal,
+                    pegawaiId
+                };
+                
+                lembur.push(newLembur);
+                saveData(STORAGE_KEYS.LEMBUR, lembur);
+                
+                alert('Lembur berhasil disimpan!');
+                
+                // Reset form
+                document.getElementById('lembur-tanggal').value = '';
+                document.getElementById('lembur-pegawai').value = '';
+            });
+            
+            // Tampilkan absen berdasarkan tanggal
+            document.getElementById('tampilkan-absen').addEventListener('click', function() {
+                const tanggal = document.getElementById('cek-tanggal').value;
+                displayLogAbsen(tanggal, 'log-absen-tanggal');
+            });
+            
+            // Buat laporan
+            document.getElementById('buat-laporan').addEventListener('click', function() {
+                const pegawaiId = document.getElementById('laporan-pegawai').value;
+                const dari = document.getElementById('laporan-dari').value;
+                const sampai = document.getElementById('laporan-sampai').value;
+                
+                if (!pegawaiId || !dari || !sampai) {
+                    alert('Harap lengkapi semua field!');
+                    return;
+                }
+                
+                buatLaporan(pegawaiId, dari, sampai);
+            });
+            
+            // Modal functionality
+            const modals = document.querySelectorAll('.modal');
+            const closeModals = document.querySelectorAll('.close-modal');
+            
+            // Tutup modal ketika klik X
+            closeModals.forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    modals.forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                });
+            });
+            
+            // Tutup modal ketika klik di luar modal
+            window.addEventListener('click', function(event) {
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Simpan perubahan absen
+            document.getElementById('simpan-edit-absen').addEventListener('click', function() {
+                const pegawaiId = document.getElementById('edit-pegawai').value;
+                const shiftId = document.getElementById('edit-shift').value;
+                const jam = document.getElementById('edit-jam').value;
+                
+                if (!pegawaiId || !shiftId || !jam) {
+                    alert('Harap lengkapi semua field!');
+                    return;
+                }
+                
+                // Ambil data absen yang akan diedit
+                const absen = getData(STORAGE_KEYS.ABSEN);
+                const dataAbsen = absen.find(a => a.id === absenIdSedangDiedit);
+                
+                if (!dataAbsen) {
+                    alert('Data absen tidak ditemukan!');
+                    return;
+                }
+                
+                const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
+                if (!shift) {
+                    alert('Shift tidak valid!');
+                    return;
+                }
+                
+                // Tentukan status baru
+                const { status, keterlambatan } = tentukanStatus(dataAbsen.tanggal, jam, shift.jam);
+                
+                // Update data absen
+                dataAbsen.pegawaiId = pegawaiId;
+                dataAbsen.shiftId = shiftId;
+                dataAbsen.jam = jam;
+                dataAbsen.status = status;
+                dataAbsen.keterlambatan = keterlambatan;
+                
+                // Simpan perubahan
+                saveData(STORAGE_KEYS.ABSEN, absen);
+                
+                // Tutup modal
+                document.getElementById('modal-edit-absen').style.display = 'none';
+                
+                alert('Data absen berhasil diperbarui!');
+                
+                // Refresh tampilan log absen
+                const tanggalSekarang = document.getElementById('absen-tanggal').value;
+                const tanggalCek = document.getElementById('cek-tanggal').value;
+                
+                displayLogAbsen(tanggalSekarang, 'log-absen-hari-ini');
+                displayLogAbsen(tanggalCek, 'log-absen-tanggal');
+            });
+            
+            // Register Service Worker untuk PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(function(registration) {
+                            console.log('ServiceWorker registration successful');
+                        })
+                        .catch(function(error) {
+                            console.log('ServiceWorker registration failed: ', error);
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
