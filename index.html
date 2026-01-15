@@ -16,6 +16,7 @@
             --warning: #f39c12;
             --light: #ecf0f1;
             --dark: #2c3e50;
+            --info: #3498db;
         }
         
         * {
@@ -140,6 +141,14 @@
             background-color: #e67e22;
         }
         
+        button.info {
+            background-color: var(--info);
+        }
+        
+        button.info:hover {
+            background-color: #2980b9;
+        }
+        
         .card {
             background-color: white;
             border-radius: 8px;
@@ -200,7 +209,7 @@
         }
         
         .status-libur {
-            color: #3498db;
+            color: var(--info);
         }
         
         .log-item {
@@ -283,6 +292,8 @@
             border-radius: 8px;
             width: 90%;
             max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
@@ -317,6 +328,22 @@
             margin-top: 10px;
         }
         
+        .form-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .import-format {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
         @media (max-width: 480px) {
             .tabs {
                 flex-direction: column;
@@ -337,6 +364,15 @@
             .backup-buttons {
                 flex-direction: column;
             }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -356,28 +392,35 @@
         
         <!-- Tab Absen -->
         <div id="absen" class="tab-content active">
-            <h2>Form Absen</h2>
-            <div class="form-group">
-                <label for="absen-tanggal">Tanggal Absen</label>
-                <input type="date" id="absen-tanggal">
+            <div class="form-section">
+                <h2>Form Absen Perorangan</h2>
+                <div class="form-group">
+                    <label for="absen-tanggal">Tanggal Absen</label>
+                    <input type="date" id="absen-tanggal">
+                </div>
+                <div class="form-group">
+                    <label for="absen-pegawai">Nama Pegawai</label>
+                    <select id="absen-pegawai">
+                        <option value="">Pilih Pegawai</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="absen-shift">Shift</label>
+                    <select id="absen-shift">
+                        <option value="">Pilih Shift</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="absen-jam">Jam Masuk</label>
+                    <input type="time" id="absen-jam">
+                </div>
+                <button id="simpan-absen" class="secondary">Simpan Absen</button>
             </div>
-            <div class="form-group">
-                <label for="absen-pegawai">Nama Pegawai</label>
-                <select id="absen-pegawai">
-                    <option value="">Pilih Pegawai</option>
-                </select>
+            
+            <div class="form-section">
+                <h2>Import Manual Absen (Multiple)</h2>
+                <button id="toggle-import" class="info">Buka Form Import Manual</button>
             </div>
-            <div class="form-group">
-                <label for="absen-shift">Shift</label>
-                <select id="absen-shift">
-                    <option value="">Pilih Shift</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="absen-jam">Jam Masuk</label>
-                <input type="time" id="absen-jam">
-            </div>
-            <button id="simpan-absen" class="secondary">Simpan Absen</button>
             
             <h3 style="margin-top: 20px;">Log Absen Hari Ini</h3>
             <div id="log-absen-hari-ini"></div>
@@ -561,6 +604,57 @@
         </div>
     </div>
 
+    <!-- Modal Import Manual -->
+    <div id="modal-import-manual" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Import Manual Absen</div>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="import-tanggal">Tanggal Absen</label>
+                <input type="date" id="import-tanggal">
+            </div>
+            <div class="form-group">
+                <label for="import-shift">Shift</label>
+                <select id="import-shift">
+                    <option value="">Pilih Shift</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="import-data">Data Pegawai (Format: NAMA, JAM)</label>
+                <textarea id="import-data" rows="10" placeholder="Masukkan data dengan format:
+Adi, 07:21
+Mei, 08:00
+Budi, 08:15
+..."></textarea>
+                <small>Satu baris untuk satu pegawai, format: NAMA, JAM (pisahkan dengan koma)</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Contoh Format:</label>
+                <div class="import-format">Adi, 07:21
+Mei, 08:00
+Budi, 08:15
+Siti, 07:59
+Ahmad, 08:30</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="import-duplicate-action">Jika pegawai sudah absen:</label>
+                <select id="import-duplicate-action">
+                    <option value="skip">Lewati (tidak disimpan)</option>
+                    <option value="replace">Ganti data lama</option>
+                </select>
+            </div>
+            
+            <button id="proses-import" class="secondary">Proses Import</button>
+            <button id="reset-import" class="danger" style="margin-top: 10px;">Reset Form</button>
+            
+            <div id="import-status" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
     <script>
         // Data storage menggunakan localStorage
         const STORAGE_KEYS = {
@@ -601,83 +695,6 @@
         // Fungsi untuk menyimpan data ke localStorage
         function saveData(key, data) {
             localStorage.setItem(key, JSON.stringify(data));
-        }
-
-        // Fungsi untuk backup semua data
-        function backupData() {
-            const allData = {};
-            Object.keys(STORAGE_KEYS).forEach(key => {
-                allData[STORAGE_KEYS[key]] = getData(STORAGE_KEYS[key]);
-            });
-            
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            const filename = `backup_absensi_${timestamp}.json`;
-            
-            const dataStr = JSON.stringify(allData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            // Buat URL untuk download
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            document.getElementById('backup-status').innerHTML = 
-                '<p class="status-hadir">Backup berhasil! File telah didownload.</p>';
-        }
-
-        // Fungsi untuk restore data dari file
-        function restoreData(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    // Validasi struktur data
-                    const isValid = Object.keys(STORAGE_KEYS).every(key => 
-                        data.hasOwnProperty(STORAGE_KEYS[key])
-                    );
-                    
-                    if (!isValid) {
-                        alert('File backup tidak valid!');
-                        return;
-                    }
-                    
-                    // Simpan data ke localStorage
-                    Object.keys(STORAGE_KEYS).forEach(key => {
-                        saveData(STORAGE_KEYS[key], data[STORAGE_KEYS[key]]);
-                    });
-                    
-                    document.getElementById('backup-status').innerHTML = 
-                        '<p class="status-hadir">Restore berhasil! Data telah dipulihkan.</p>';
-                    
-                    // Tutup modal
-                    document.getElementById('modal-restore').style.display = 'none';
-                    
-                    // Refresh tampilan
-                    location.reload();
-                    
-                } catch (error) {
-                    alert('Error membaca file backup: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        // Fungsi untuk reset semua data
-        function resetAllData() {
-            if (confirm('APAKAH ANDA YAKIN?\n\nSemua data akan dihapus permanen termasuk:\n- Data pegawai\n- Data shift\n- Tanggal libur\n- Data absensi\n- Data lembur\n\nTindakan ini tidak dapat dibatalkan!')) {
-                Object.keys(STORAGE_KEYS).forEach(key => {
-                    localStorage.removeItem(STORAGE_KEYS[key]);
-                });
-                initializeData();
-                alert('Semua data telah direset!');
-                location.reload();
-            }
         }
 
         // Fungsi untuk memuat data pegawai ke dropdown
@@ -1105,6 +1122,219 @@
             }
         }
 
+        // Fungsi untuk backup semua data
+        function backupData() {
+            const allData = {};
+            Object.keys(STORAGE_KEYS).forEach(key => {
+                allData[STORAGE_KEYS[key]] = getData(STORAGE_KEYS[key]);
+            });
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const filename = `backup_absensi_${timestamp}.json`;
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            // Buat URL untuk download
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            document.getElementById('backup-status').innerHTML = 
+                '<p class="status-hadir">Backup berhasil! File telah didownload.</p>';
+        }
+
+        // Fungsi untuk restore data dari file
+        function restoreData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validasi struktur data
+                    const isValid = Object.keys(STORAGE_KEYS).every(key => 
+                        data.hasOwnProperty(STORAGE_KEYS[key])
+                    );
+                    
+                    if (!isValid) {
+                        alert('File backup tidak valid!');
+                        return;
+                    }
+                    
+                    // Simpan data ke localStorage
+                    Object.keys(STORAGE_KEYS).forEach(key => {
+                        saveData(STORAGE_KEYS[key], data[STORAGE_KEYS[key]]);
+                    });
+                    
+                    document.getElementById('backup-status').innerHTML = 
+                        '<p class="status-hadir">Restore berhasil! Data telah dipulihkan.</p>';
+                    
+                    // Tutup modal
+                    document.getElementById('modal-restore').style.display = 'none';
+                    
+                    // Refresh tampilan
+                    setTimeout(() => location.reload(), 1000);
+                    
+                } catch (error) {
+                    alert('Error membaca file backup: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Fungsi untuk reset semua data
+        function resetAllData() {
+            if (confirm('APAKAH ANDA YAKIN?\n\nSemua data akan dihapus permanen termasuk:\n- Data pegawai\n- Data shift\n- Tanggal libur\n- Data absensi\n- Data lembur\n\nTindakan ini tidak dapat dibatalkan!')) {
+                Object.keys(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(STORAGE_KEYS[key]);
+                });
+                initializeData();
+                alert('Semua data telah direset!');
+                location.reload();
+            }
+        }
+
+        // Fungsi untuk memproses import manual
+        function prosesImportManual() {
+            const tanggal = document.getElementById('import-tanggal').value;
+            const shiftId = document.getElementById('import-shift').value;
+            const importData = document.getElementById('import-data').value;
+            const duplicateAction = document.getElementById('import-duplicate-action').value;
+            
+            if (!tanggal || !shiftId || !importData) {
+                alert('Harap lengkapi semua field!');
+                return;
+            }
+            
+            const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
+            if (!shift) {
+                alert('Shift tidak valid!');
+                return;
+            }
+            
+            // Parse data per baris
+            const lines = importData.split('\n');
+            let berhasil = 0;
+            let gagal = 0;
+            let skipped = 0;
+            const errors = [];
+            
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const pegawaiList = getData(STORAGE_KEYS.PEGAWAI);
+            
+            lines.forEach((line, index) => {
+                line = line.trim();
+                if (line === '') return; // lewati baris kosong
+                
+                // Parse format: nama, jam
+                const parts = line.split(',');
+                if (parts.length < 2) {
+                    gagal++;
+                    errors.push(`Baris ${index+1}: format tidak valid - "${line}"`);
+                    return;
+                }
+                
+                const nama = parts[0].trim();
+                let jam = parts[1].trim();
+                
+                // Validasi format jam
+                if (!jam.match(/^\d{1,2}:\d{2}$/)) {
+                    gagal++;
+                    errors.push(`Baris ${index+1}: format jam tidak valid - "${jam}"`);
+                    return;
+                }
+                
+                // Format jam ke HH:MM
+                const [hours, minutes] = jam.split(':').map(Number);
+                if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+                    gagal++;
+                    errors.push(`Baris ${index+1}: jam tidak valid - "${jam}"`);
+                    return;
+                }
+                
+                jam = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                
+                // Cari pegawai berdasarkan nama
+                const pegawai = pegawaiList.find(p => p.nama.toLowerCase() === nama.toLowerCase());
+                if (!pegawai) {
+                    gagal++;
+                    errors.push(`Baris ${index+1}: pegawai "${nama}" tidak ditemukan di data master`);
+                    return;
+                }
+                
+                // Cek apakah pegawai sudah absen di tanggal ini
+                const absenPegawai = absen.find(a => a.pegawaiId === pegawai.id && a.tanggal === tanggal);
+                
+                if (absenPegawai) {
+                    if (duplicateAction === 'skip') {
+                        skipped++;
+                        errors.push(`Baris ${index+1}: pegawai "${nama}" sudah absen, dilewati`);
+                        return;
+                    } else if (duplicateAction === 'replace') {
+                        // Hapus data lama
+                        const indexToRemove = absen.findIndex(a => a.id === absenPegawai.id);
+                        if (indexToRemove !== -1) {
+                            absen.splice(indexToRemove, 1);
+                        }
+                    }
+                }
+                
+                // Tentukan status
+                const { status, keterlambatan } = tentukanStatus(tanggal, jam, shift.jam);
+                
+                // Simpan absen
+                const newAbsen = {
+                    id: Date.now().toString() + '-' + index + '-' + Math.random().toString(36).substr(2, 9),
+                    tanggal,
+                    pegawaiId: pegawai.id,
+                    shiftId,
+                    jam,
+                    status,
+                    keterlambatan
+                };
+                
+                absen.push(newAbsen);
+                berhasil++;
+            });
+            
+            if (berhasil > 0) {
+                saveData(STORAGE_KEYS.ABSEN, absen);
+                
+                let message = `Import selesai: ${berhasil} data berhasil disimpan.`;
+                if (gagal > 0) message += ` ${gagal} data gagal.`;
+                if (skipped > 0) message += ` ${skipped} data dilewati (sudah absen).`;
+                
+                if (errors.length > 0) {
+                    message += '\n\nDetail error:\n' + errors.slice(0, 5).join('\n');
+                    if (errors.length > 5) {
+                        message += `\n...dan ${errors.length - 5} error lainnya.`;
+                    }
+                }
+                
+                document.getElementById('import-status').innerHTML = 
+                    `<p class="${gagal === 0 ? 'status-hadir' : 'status-telat'}">${message}</p>`;
+                
+                // Refresh log absen
+                displayLogAbsen(tanggal, 'log-absen-hari-ini');
+                
+                // Clear form setelah beberapa detik jika berhasil semua
+                if (gagal === 0) {
+                    setTimeout(() => {
+                        document.getElementById('import-data').value = '';
+                        document.getElementById('import-status').innerHTML = '';
+                    }, 3000);
+                }
+            } else {
+                document.getElementById('import-status').innerHTML = 
+                    `<p class="status-bolos">Tidak ada data yang berhasil diimport. Error: ${errors.join(', ')}</p>`;
+            }
+        }
+
         // Event listener ketika DOM selesai dimuat
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
@@ -1112,6 +1342,7 @@
             // Set tanggal default ke hari ini
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('absen-tanggal').value = today;
+            document.getElementById('import-tanggal').value = today;
             document.getElementById('lembur-tanggal').value = today;
             document.getElementById('cek-tanggal').value = today;
             document.getElementById('laporan-dari').value = today;
@@ -1123,6 +1354,7 @@
             loadPegawaiDropdown(document.getElementById('laporan-pegawai'));
             loadPegawaiDropdown(document.getElementById('edit-pegawai'));
             loadShiftDropdown(document.getElementById('absen-shift'));
+            loadShiftDropdown(document.getElementById('import-shift'));
             loadShiftDropdown(document.getElementById('edit-shift'));
             
             // Tampilkan daftar
@@ -1243,6 +1475,23 @@
                 displayLogAbsen(tanggal, 'log-absen-hari-ini');
             });
             
+            // Import Manual functionality
+            document.getElementById('toggle-import').addEventListener('click', function() {
+                // Isi tanggal import dengan tanggal dari form biasa
+                const tanggalBiasa = document.getElementById('absen-tanggal').value;
+                document.getElementById('import-tanggal').value = tanggalBiasa;
+                
+                // Tampilkan modal
+                document.getElementById('modal-import-manual').style.display = 'flex';
+            });
+            
+            document.getElementById('proses-import').addEventListener('click', prosesImportManual);
+            
+            document.getElementById('reset-import').addEventListener('click', function() {
+                document.getElementById('import-data').value = '';
+                document.getElementById('import-status').innerHTML = '';
+            });
+            
             // Tambah pegawai
             document.getElementById('tambah-pegawai').addEventListener('click', function() {
                 const nama = document.getElementById('pegawai-nama').value;
@@ -1327,6 +1576,7 @@
                 
                 // Refresh dropdown dan daftar
                 loadShiftDropdown(document.getElementById('absen-shift'));
+                loadShiftDropdown(document.getElementById('import-shift'));
                 loadShiftDropdown(document.getElementById('edit-shift'));
                 displayShiftList();
             });
@@ -1347,6 +1597,7 @@
                     
                     // Refresh dropdown dan daftar
                     loadShiftDropdown(document.getElementById('absen-shift'));
+                    loadShiftDropdown(document.getElementById('import-shift'));
                     loadShiftDropdown(document.getElementById('edit-shift'));
                     displayShiftList();
                     
