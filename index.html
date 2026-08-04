@@ -21,7 +21,6 @@
     </script>
 
     <style>
-        /* ===== RESET & VARIABEL ===== */
         * {
             margin: 0;
             padding: 0;
@@ -52,7 +51,7 @@
             padding: 10px 12px 80px 12px;
         }
 
-        /* ===== LOGIN OVERLAY ===== */
+        /* login */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -73,7 +72,6 @@
             max-width: 380px;
             width: 100%;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            animation: fadeUp 0.3s ease;
         }
         #login-box h2 {
             margin-bottom: 20px;
@@ -128,7 +126,7 @@
             text-align: center;
         }
 
-        /* ===== HEADER ===== */
+        /* header */
         header {
             background: var(--primary);
             color: #fff;
@@ -163,7 +161,7 @@
             cursor: pointer;
         }
 
-        /* ===== TAB CONTENT ===== */
+        /* tabs */
         .tab-content {
             display: none;
             background: #fff;
@@ -187,7 +185,6 @@
             }
         }
 
-        /* ===== NAV BOTTOM ===== */
         .nav-bottom {
             position: fixed;
             bottom: 0;
@@ -245,11 +242,8 @@
             background: var(--primary);
             border-radius: 0 0 4px 4px;
         }
-        .nav-bottom .tab-btn:active {
-            transform: scale(0.94);
-        }
 
-        /* ===== FORM ELEMENTS ===== */
+        /* forms */
         .form-group {
             margin-bottom: 14px;
         }
@@ -385,7 +379,7 @@
             align-items: center;
         }
 
-        /* ===== STATUS ===== */
+        /* status */
         .status-hadir {
             color: var(--secondary);
         }
@@ -402,11 +396,6 @@
             color: var(--info);
         }
 
-        /* ===== TABEL ===== */
-        .table-wrap {
-            overflow-x: auto;
-            margin-top: 8px;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -424,29 +413,32 @@
             color: #444;
         }
 
-        /* ===== DASHBOARD ===== */
-        .dash-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+        /* dashboard cards - 1 per row */
         .dash-card {
             background: #fff;
             border-radius: var(--radius);
-            padding: 14px 12px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
             box-shadow: var(--shadow);
-            text-align: center;
             border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: 0.15s;
         }
-        .dash-card .number {
-            font-size: 1.8rem;
+        .dash-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .dash-card:active {
+            transform: scale(0.98);
+        }
+        .dash-card .dash-number {
+            font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
         }
-        .dash-card .label {
-            font-size: 0.78rem;
-            color: #777;
+        .dash-card .dash-label {
+            font-size: 0.9rem;
+            color: #666;
             margin-top: 2px;
         }
         .dash-card.green {
@@ -461,32 +453,49 @@
         .dash-card.blue {
             border-left-color: var(--info);
         }
-        .dash-card .number.green {
+        .dash-card .dash-number.green {
             color: var(--secondary);
         }
-        .dash-card .number.orange {
+        .dash-card .dash-number.orange {
             color: var(--warning);
         }
-        .dash-card .number.red {
+        .dash-card .dash-number.red {
             color: var(--danger);
         }
-        .dash-card .number.blue {
+        .dash-card .dash-number.blue {
             color: var(--info);
         }
 
+        /* gaji card */
         .gaji-card {
-            background: #fef9e7;
+            background: #fff;
             border-radius: var(--radius);
-            padding: 12px 16px;
-            margin-bottom: 14px;
-            border-left: 4px solid var(--warning);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ccc;
             box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: 0.15s;
         }
-        .gaji-card strong {
+        .gaji-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .gaji-card.highlight {
+            background: #fef9e7;
+            border-left-color: var(--warning);
+        }
+        .gaji-card .gaji-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .gaji-card .gaji-count {
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--warning);
         }
 
-        /* ===== MODAL ===== */
+        /* modal */
         .modal {
             display: none;
             position: fixed;
@@ -509,7 +518,6 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            animation: fadeUp 0.25s ease;
         }
         .modal-header {
             display: flex;
@@ -534,10 +542,6 @@
             color: #333;
         }
 
-        /* ===== BACKUP ===== */
-        .backup-section {
-            margin-top: 16px;
-        }
         .backup-buttons {
             display: flex;
             gap: 8px;
@@ -559,15 +563,29 @@
             border: 1px solid #eee;
         }
 
-        /* ===== AUTOCOMPLETE ===== */
         .autocomplete-wrap {
             position: relative;
         }
         .autocomplete-wrap input {
             width: 100%;
+            padding-right: 40px;
+        }
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #aaa;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .clear-btn:hover {
+            color: #333;
         }
 
-        /* ===== LEMBUR LOG ===== */
         .lembur-log {
             margin-top: 12px;
             border-top: 1px solid #eee;
@@ -577,14 +595,61 @@
             padding: 6px 0;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .text-muted {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+
+        .pegawai-item .sub-text {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        #sync-status {
+            font-size: 0.75rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .sync-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+        .sync-dot.sync-offline {
+            background: #e74c3c;
+        }
+
         @media (max-width: 480px) {
-            .dash-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .dash-card .number {
-                font-size: 1.4rem;
+            .dash-card .dash-number {
+                font-size: 1.6rem;
             }
             .nav-bottom .tab-btn .label {
                 font-size: 0.55rem;
@@ -625,170 +690,74 @@
                 --nav-height: 52px;
             }
         }
-
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mt-12 {
-            margin-top: 12px;
-        }
-        .mb-8 {
-            margin-bottom: 8px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-muted {
-            color: #888;
-            font-size: 0.85rem;
-        }
-        .flex {
-            display: flex;
-        }
-        .flex-between {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .gap-8 {
-            gap: 8px;
-        }
-        .gap-4 {
-            gap: 4px;
-        }
-        .wrap {
-            flex-wrap: wrap;
-        }
-
-        .clickable-card {
-            cursor: pointer;
-            transition: 0.15s;
-            position: relative;
-        }
-        .clickable-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .clickable-card:active {
-            transform: scale(0.97);
-        }
-        .clickable-card .badge-click {
-            position: absolute;
-            top: 6px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: #aaa;
-        }
-
-        /* Sync status */
-        #sync-status {
-            font-size: 0.75rem;
-            color: #888;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .sync-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #27ae60;
-        }
-        .sync-dot.sync-offline {
-            background: #e74c3c;
-        }
-        .sync-dot.sync-loading {
-            background: #f39c12;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN OVERLAY (hanya login) -->
+    <!-- LOGIN -->
     <div id="login-overlay">
         <div id="login-box">
-            <h2>📋 Absensi Restoran</h2>
+            <h2>Absensi Restoran</h2>
             <div id="login-form">
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" id="login-email" placeholder="email@contoh.com" />
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" placeholder="Password" />
+                    <label>Kata Sandi</label>
+                    <input type="password" id="login-password" placeholder="Kata sandi" />
                 </div>
                 <button id="login-btn">Masuk</button>
                 <div id="login-error" class="error-msg"></div>
-                <div class="info-text">
-                    Akun dibuat oleh administrator melalui Firebase Console
-                </div>
+                <div class="info-text">Akun dibuat oleh administrator melalui Firebase Console</div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP (hidden until login) -->
+    <!-- APP -->
     <div id="app" style="display:none;">
         <div class="container">
             <header>
-                <h1>📋 Absensi Restoran</h1>
+                <h1>Absensi Restoran</h1>
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span id="sync-status"><span class="sync-dot" id="sync-dot"></span> <span id="sync-text">Online</span></span>
                     <button class="logout-btn" id="logout-btn">Keluar</button>
                 </div>
             </header>
 
-            <!-- TAB CONTENT: DASHBOARD -->
+            <!-- DASHBOARD -->
             <div id="dashboard" class="tab-content active">
-                <h2 style="margin-bottom:12px;font-size:1.1rem;">📊 Dashboard</h2>
-                <div id="gaji-hari-ini" class="gaji-card" style="display:none;"></div>
-                <div class="dash-grid">
-                    <div class="dash-card green">
-                        <div class="number green" id="dash-total-pegawai">0</div>
-                        <div class="label">Total Pegawai</div>
+                <!-- Gaji card -->
+                <div id="gaji-card" class="gaji-card">
+                    <div class="flex-between">
+                        <span class="gaji-title">Terima Gaji Hari Ini</span>
+                        <span class="gaji-count" id="gaji-count">0</span>
                     </div>
-                    <div class="dash-card blue">
-                        <div class="number blue" id="dash-hadir-hari-ini">0</div>
-                        <div class="label">Hadir Hari Ini</div>
-                    </div>
-                    <div class="dash-card orange">
-                        <div class="number orange" id="dash-terlambat-hari-ini">0</div>
-                        <div class="label">Terlambat Hari Ini</div>
-                    </div>
-                    <div class="dash-card red">
-                        <div class="number red" id="dash-bolos-hari-ini">0</div>
-                        <div class="label">Bolos Hari Ini</div>
-                    </div>
+                    <div id="gaji-names" class="text-muted" style="font-size:0.85rem;margin-top:4px;"></div>
                 </div>
-                <div class="dash-grid" style="grid-template-columns:1fr 1fr 1fr;">
-                    <div class="dash-card" style="border-left-color:#9b59b6;">
-                        <div class="number" style="color:#9b59b6;" id="dash-lembur-30">0</div>
-                        <div class="label">Lembur (30hr)</div>
-                    </div>
-                    <div class="dash-card" style="border-left-color:#1abc9c;">
-                        <div class="number" style="color:#1abc9c;" id="dash-izin-30">0</div>
-                        <div class="label">Izin (30hr)</div>
-                    </div>
-                    <div class="dash-card" style="border-left-color:#e67e22;">
-                        <div class="number" style="color:#e67e22;" id="dash-bolos-30">0</div>
-                        <div class="label">Bolos (30hr)</div>
-                    </div>
+
+                <!-- Cards -->
+                <div class="dash-card green" data-detail="total-pegawai">
+                    <div class="dash-number green" id="dash-total-pegawai">0</div>
+                    <div class="dash-label">Total Pegawai</div>
+                </div>
+                <div class="dash-card blue" data-detail="hadir-hari">
+                    <div class="dash-number blue" id="dash-hadir-hari-ini">0</div>
+                    <div class="dash-label">Hadir Hari Ini</div>
+                </div>
+                <div class="dash-card orange" data-detail="telat-hari">
+                    <div class="dash-number orange" id="dash-terlambat-hari-ini">0</div>
+                    <div class="dash-label">Terlambat Hari Ini</div>
+                </div>
+                <div class="dash-card red" data-detail="bolos-hari">
+                    <div class="dash-number red" id="dash-bolos-hari-ini">0</div>
+                    <div class="dash-label">Tidak Absen Hari Ini</div>
                 </div>
             </div>
 
-            <!-- TAB CONTENT: ABSEN -->
+            <!-- ABSEN -->
             <div id="absen" class="tab-content">
-                <h2 style="margin-bottom:12px;font-size:1.05rem;">✏️ Form Absen Perorangan</h2>
+                <h2 style="margin-bottom:12px;font-size:1.05rem;">Form Absen Perorangan</h2>
                 <div class="form-group">
                     <label for="absen-tanggal">Tanggal</label>
                     <input type="date" id="absen-tanggal" />
@@ -807,19 +776,18 @@
                 </div>
                 <button id="simpan-absen" class="secondary block">Simpan Absen</button>
                 <hr style="margin:18px 0;border-color:#eee;" />
-                <button id="toggle-import" class="info block" style="margin-bottom:12px;">📥 Import Manual Massal</button>
-                <h3 style="margin-top:16px;font-size:0.95rem;">📋 Log Absen Hari Ini</h3>
+                <button id="toggle-import" class="info block" style="margin-bottom:12px;">Import Manual Massal</button>
+                <h3 style="margin-top:16px;font-size:0.95rem;">Log Absen Hari Ini</h3>
                 <div id="log-absen-hari-ini"></div>
             </div>
 
-            <!-- TAB CONTENT: DATA MASTER -->
+            <!-- DATA MASTER -->
             <div id="data-master" class="tab-content">
-                <h2 style="margin-bottom:12px;font-size:1.05rem;">⚙️ Data Master</h2>
+                <h2 style="margin-bottom:12px;font-size:1.05rem;">Data Master</h2>
 
-                <!-- Pegawai -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">👤 Data Pegawai</div>
+                        <div class="card-title">Data Pegawai</div>
                         <button class="small" id="toggle-pegawai">Edit</button>
                     </div>
                     <div class="card-content" id="pegawai-content">
@@ -839,10 +807,9 @@
                     </div>
                 </div>
 
-                <!-- Shift -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">🕒 Data Shift</div>
+                        <div class="card-title">Data Shift</div>
                         <button class="small" id="toggle-shift">Edit</button>
                     </div>
                     <div class="card-content" id="shift-content">
@@ -862,10 +829,9 @@
                     </div>
                 </div>
 
-                <!-- Libur -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">📅 Tanggal Libur</div>
+                        <div class="card-title">Tanggal Libur</div>
                         <button class="small" id="toggle-libur">Edit</button>
                     </div>
                     <div class="card-content" id="libur-content">
@@ -881,10 +847,9 @@
                     </div>
                 </div>
 
-                <!-- Backup (optional, tetap pakai local) -->
                 <div class="card backup-section">
                     <div class="card-header">
-                        <div class="card-title">💾 Backup & Restore (Local)</div>
+                        <div class="card-title">Backup & Restore (Local)</div>
                     </div>
                     <div class="card-content active">
                         <div class="backup-buttons">
@@ -899,9 +864,9 @@
                 <button id="simpan-data-master" class="secondary block">Simpan Perubahan</button>
             </div>
 
-            <!-- TAB CONTENT: LEMBUR -->
+            <!-- LEMBUR -->
             <div id="lembur" class="tab-content">
-                <h2 style="margin-bottom:12px;font-size:1.05rem;">⏰ Form Lembur</h2>
+                <h2 style="margin-bottom:12px;font-size:1.05rem;">Form Lembur</h2>
                 <div class="form-group">
                     <label for="lembur-tanggal">Tanggal Lembur</label>
                     <input type="date" id="lembur-tanggal" />
@@ -912,19 +877,18 @@
                 </div>
                 <button id="simpan-lembur" class="secondary block">Simpan Lembur</button>
                 <div class="lembur-log">
-                    <h3 style="font-size:0.95rem;">📋 Lembur 30 Hari Terakhir</h3>
+                    <h3 style="font-size:0.95rem;">Lembur 30 Hari Terakhir</h3>
                     <div id="log-lembur-30" class="mt-8"></div>
                 </div>
             </div>
 
-            <!-- TAB CONTENT: LAPORAN -->
+            <!-- LAPORAN -->
             <div id="laporan" class="tab-content">
-                <h2 style="margin-bottom:12px;font-size:1.05rem;">📄 Laporan & Cek Absen</h2>
+                <h2 style="margin-bottom:12px;font-size:1.05rem;">Laporan & Cek Absen</h2>
 
-                <!-- Cek Absen per Tanggal -->
                 <div class="card" style="border-left-color:var(--info);">
                     <div class="card-header">
-                        <div class="card-title">🔍 Cek Absen per Tanggal</div>
+                        <div class="card-title">Cek Absen per Tanggal</div>
                     </div>
                     <div class="form-group" style="margin-bottom:8px;">
                         <label for="cek-tanggal">Tanggal</label>
@@ -934,16 +898,16 @@
                     <div id="log-absen-tanggal" class="mt-8"></div>
                 </div>
 
-                <!-- Laporan Periode -->
                 <div class="card" style="border-left-color:var(--secondary);">
                     <div class="card-header">
-                        <div class="card-title">📊 Laporan Periode</div>
+                        <div class="card-title">Laporan Periode</div>
                     </div>
                     <div class="form-group">
                         <label for="laporan-pegawai-input">Nama Pegawai</label>
                         <div class="autocomplete-wrap">
                             <input type="text" id="laporan-pegawai-input" placeholder="Ketik nama..." autocomplete="off" list="pegawai-datalist" />
                             <datalist id="pegawai-datalist"></datalist>
+                            <button class="clear-btn" id="clear-laporan-input" title="Hapus">×</button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -961,7 +925,7 @@
             </div>
         </div>
 
-        <!-- NAV BOTTOM -->
+        <!-- NAV -->
         <nav class="nav-bottom" id="navBottom">
             <button class="tab-btn active" data-tab="dashboard"><span class="icon">📊</span><span class="label">Dashboard</span></button>
             <button class="tab-btn" data-tab="absen"><span class="icon">✏️</span><span class="label">Absen</span></button>
@@ -974,7 +938,7 @@
     <!-- MODALS -->
     <div id="modal-edit-absen" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><div class="modal-title">✏️ Edit Absen</div><button class="close-modal">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Edit Absen</div><button class="close-modal">&times;</button></div>
             <div class="form-group"><label>Pegawai</label><select id="edit-pegawai"><option value="">Pilih</option></select></div>
             <div class="form-group"><label>Shift</label><select id="edit-shift"><option value="">Pilih</option></select></div>
             <div class="form-group"><label>Jam Masuk</label><input type="time" id="edit-jam" /></div>
@@ -984,21 +948,24 @@
 
     <div id="modal-restore" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><div class="modal-title">📂 Restore Data</div><button class="close-modal">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Restore Data</div><button class="close-modal">&times;</button></div>
             <div class="form-group"><label>Pilih File Backup</label><input type="file" id="restore-file" accept=".json" /></div>
-            <p style="font-size:0.85rem;color:#e67e22;margin-bottom:12px;">⚠️ Restore akan menggantikan semua data saat ini.</p>
+            <p style="font-size:0.85rem;color:#e67e22;margin-bottom:12px;">Restore akan menggantikan semua data saat ini.</p>
             <button id="proses-restore" class="warning block">Proses Restore</button>
         </div>
     </div>
 
     <div id="modal-import-manual" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><div class="modal-title">📥 Import Manual Massal</div><button class="close-modal">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Import Manual Massal</div><button class="close-modal">&times;</button></div>
             <div class="form-group"><label>Tanggal</label><input type="date" id="import-tanggal" /></div>
             <div class="form-group"><label>Shift</label><select id="import-shift"><option value="">Pilih Shift</option></select></div>
             <div class="form-group">
                 <label>Data (format: Nama, Jam atau Nama, Lembur)</label>
-                <textarea id="import-data" rows="8" placeholder="Contoh:&#10;Adi, 07:21&#10;Mei, 08:00&#10;Budi, Lembur"></textarea>
+                <div style="position:relative;">
+                    <textarea id="import-data" rows="8" placeholder="Contoh:&#10;Adi, 07:21&#10;Mei, 08:00&#10;Budi, Lembur"></textarea>
+                    <button class="clear-btn" id="clear-import-data" style="top:8px;right:8px;transform:none;position:absolute;" title="Hapus">×</button>
+                </div>
                 <div class="import-format">Adi, 07:21\nMei, 08:00\nBudi, Lembur</div>
             </div>
             <div class="form-group">
@@ -1021,10 +988,9 @@
         </div>
     </div>
 
-    <!-- Modal Edit Gajian -->
     <div id="modal-edit-gajian" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><div class="modal-title">💰 Edit Tanggal Gajian</div><button class="close-modal">&times;</button></div>
+            <div class="modal-header"><div class="modal-title">Edit Tanggal Gajian</div><button class="close-modal">&times;</button></div>
             <div class="form-group">
                 <label>Pegawai</label>
                 <input type="text" id="edit-gajian-nama" disabled style="background:#f0f0f0;" />
@@ -1037,9 +1003,17 @@
         </div>
     </div>
 
+    <!-- detail modal untuk dashboard -->
+    <div id="modal-detail-dashboard" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><div class="modal-title" id="modal-dash-title">Detail</div><button class="close-modal">&times;</button></div>
+            <div id="modal-dash-body" style="max-height:60vh;overflow-y:auto;"></div>
+        </div>
+    </div>
+
     <script type="module">
         // ============================================================
-        //  FIREBASE CONFIGURATION (Sudah diisi dengan config Anda)
+        //  FIREBASE CONFIG
         // ============================================================
         import { initializeApp } from 'firebase/app';
         import {
@@ -1053,9 +1027,7 @@
             doc,
             getDoc,
             setDoc,
-            onSnapshot,
-            collection,
-            writeBatch
+            onSnapshot
         } from 'firebase/firestore';
 
         const firebaseConfig = {
@@ -1077,6 +1049,13 @@
         const COLLECTION = 'absensi_data';
         let currentUser = null;
         let syncListener = null;
+        let allData = {
+            pegawai: [],
+            shift: [],
+            libur: [],
+            absen: [],
+            lembur: []
+        };
 
         // ============================================================
         //  DOM REFS
@@ -1090,12 +1069,12 @@
         const logoutBtn = document.getElementById('logout-btn');
 
         // ============================================================
-        //  AUTH FUNCTIONS
+        //  AUTH
         // ============================================================
         loginBtn.addEventListener('click', async () => {
             const email = loginEmail.value.trim();
             const pass = loginPassword.value;
-            if (!email || !pass) { loginError.textContent = 'Isi email dan password!'; return; }
+            if (!email || !pass) { loginError.textContent = 'Isi email dan kata sandi!'; return; }
             loginBtn.classList.add('loading');
             loginError.textContent = '';
             try {
@@ -1106,29 +1085,16 @@
             }
         });
 
-        // Enter key support
-        loginPassword.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') loginBtn.click();
-        });
-        loginEmail.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') loginPassword.focus();
-        });
+        loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+        loginEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginPassword.focus(); });
 
         logoutBtn.addEventListener('click', async () => {
             await signOut(auth);
         });
 
         // ============================================================
-        //  FIRESTORE DATA SYNC
+        //  FIRESTORE SYNC
         // ============================================================
-        let allData = {
-            pegawai: [],
-            shift: [],
-            libur: [],
-            absen: [],
-            lembur: []
-        };
-
         async function saveAllDataToFirestore() {
             if (!currentUser) return;
             const userDoc = doc(db, COLLECTION, currentUser.uid);
@@ -1203,35 +1169,6 @@
         }
 
         // ============================================================
-        //  UI REFRESH
-        // ============================================================
-        function refreshAllUI() {
-            loadPegawaiDropdown(document.getElementById('absen-pegawai'));
-            loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
-            loadPegawaiDropdown(document.getElementById('edit-pegawai'));
-            loadShiftDropdown(document.getElementById('absen-shift'));
-            loadShiftDropdown(document.getElementById('import-shift'));
-            loadShiftDropdown(document.getElementById('edit-shift'));
-
-            renderPegawaiList();
-            renderShiftList();
-            renderLiburList();
-
-            const t = document.getElementById('absen-tanggal').value || today();
-            renderAbsenTable(t, 'log-absen-hari-ini');
-            renderLemburLog();
-            updateDashboard();
-
-            const datalist = document.getElementById('pegawai-datalist');
-            datalist.innerHTML = '';
-            allData.pegawai.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.nama;
-                datalist.appendChild(opt);
-            });
-        }
-
-        // ============================================================
         //  HELPERS
         // ============================================================
         function today() { return new Date().toISOString().split('T')[0]; }
@@ -1265,7 +1202,7 @@
         }
 
         // ============================================================
-        //  RENDER FUNGSI
+        //  RENDER FUNCTIONS
         // ============================================================
         function loadPegawaiDropdown(el) {
             el.innerHTML = '<option value="">Pilih Pegawai</option>';
@@ -1292,9 +1229,12 @@
             c.innerHTML = '';
             allData.pegawai.forEach(p => {
                 const d = document.createElement('div');
-                d.className = 'log-item';
+                d.className = 'log-item pegawai-item';
                 d.innerHTML = `
-                        <div class="log-info"><strong>${p.nama}</strong> ${p.tanggalGajian ? '💰 '+p.tanggalGajian : ''}</div>
+                        <div class="log-info">
+                            <div><strong>${p.nama}</strong></div>
+                            <div class="sub-text">${p.tanggalGajian ? 'Tanggal terima gaji: '+p.tanggalGajian : 'Tanggal terima gaji: belum diatur'}</div>
+                        </div>
                         <div class="log-actions">
                             <button class="small info" onclick="window.editGajian('${p.id}')">Edit Gaji</button>
                             <input type="radio" name="selected-pegawai" value="${p.id}" />
@@ -1387,15 +1327,19 @@
             const tglNow = new Date();
             const dayNow = tglNow.getDate();
 
+            // Total pegawai
             document.getElementById('dash-total-pegawai').textContent = pegawai.length;
 
+            // Hadir hari ini
             const absenHari = absen.filter(a => a.tanggal === hariIni);
             const hadir = absenHari.filter(a => a.status.includes('Hadir'));
             document.getElementById('dash-hadir-hari-ini').textContent = hadir.length;
 
+            // Terlambat hari ini
             const telat = absenHari.filter(a => a.keterlambatan > 0);
             document.getElementById('dash-terlambat-hari-ini').textContent = telat.length;
 
+            // Tidak absen hari ini (bolos)
             const isLibur = allData.libur.includes(hariIni);
             let bolos = 0;
             if (!isLibur) {
@@ -1404,45 +1348,40 @@
             }
             document.getElementById('dash-bolos-hari-ini').textContent = bolos;
 
-            const cutoff = daysAgo(30);
-            const lembur30 = lembur.filter(l => l.tanggal >= cutoff);
-            document.getElementById('dash-lembur-30').textContent = lembur30.length;
-
-            const absen30 = absen.filter(a => a.tanggal >= cutoff);
-            const izin30 = absen30.filter(a => a.status.includes('Izin'));
-            document.getElementById('dash-izin-30').textContent = izin30.length;
-
-            let totalBolos30 = 0;
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate() - 30);
-            const endDate = new Date();
-            const liburSet = new Set(allData.libur);
-            const pegawaiIds = pegawai.map(p => p.id);
-            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-                const tgl = formatDate(d);
-                if (liburSet.has(tgl)) continue;
-                const day = d.getDay();
-                if (day === 0 || day === 6) continue;
-                const absenTgl = absen.filter(a => a.tanggal === tgl);
-                const hadirIds2 = new Set(absenTgl.filter(a => a.status.includes('Hadir')).map(a => a.pegawaiId));
-                pegawaiIds.forEach(id => { if (!hadirIds2.has(id)) totalBolos30++; });
-            }
-            document.getElementById('dash-bolos-30').textContent = totalBolos30;
-
-            const gajiDiv = document.getElementById('gaji-hari-ini');
+            // Gaji card
+            const gajiCard = document.getElementById('gaji-card');
+            const gajiCount = document.getElementById('gaji-count');
+            const gajiNames = document.getElementById('gaji-names');
             const pegawaiGaji = pegawai.filter(p => p.tanggalGajian && Number(p.tanggalGajian) === dayNow);
-            if (pegawaiGaji.length) {
-                const nama = pegawaiGaji.map(p => p.nama).join(' dan ');
-                gajiDiv.innerHTML =
-                    `💰 <strong>${nama}</strong> terima gaji hari ini! 🎉`;
-                gajiDiv.style.display = 'block';
+            gajiCount.textContent = pegawaiGaji.length;
+            if (pegawaiGaji.length > 0) {
+                gajiCard.classList.add('highlight');
+                gajiNames.textContent = pegawaiGaji.map(p => p.nama).join(', ');
             } else {
-                gajiDiv.style.display = 'none';
+                gajiCard.classList.remove('highlight');
+                gajiNames.textContent = 'Tidak ada pegawai yang menerima gaji hari ini.';
             }
+
+            // Simpan data untuk detail click
+            window._dashData = {
+                totalPegawai: pegawai.map(p => p.nama),
+                hadirHari: absenHari.filter(a => a.status.includes('Hadir')).map(a => {
+                    const p = getPegawaiById(a.pegawaiId);
+                    return p ? p.nama : '?';
+                }),
+                telatHari: absenHari.filter(a => a.keterlambatan > 0).map(a => {
+                    const p = getPegawaiById(a.pegawaiId);
+                    return p ? p.nama + ' (' + a.keterlambatan + ' mnt)' : '?';
+                }),
+                bolosHari: pegawai.filter(p => {
+                    if (isLibur) return false;
+                    return !absenHari.some(a => a.pegawaiId === p.id);
+                }).map(p => p.nama)
+            };
         }
 
         // ============================================================
-        //  LAPORAN
+        //  LAPORAN (dengan perbaikan bolos/izin)
         // ============================================================
         function hitungIzinBolos(idPegawai, dari, sampai) {
             let izin = 0,
@@ -1453,11 +1392,16 @@
             const liburSet = new Set(allData.libur);
             for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
                 const tgl = formatDate(d);
-                const day = d.getDay();
+                const day = d.getDay(); // 0=minggu, 6=sabtu
                 if (liburSet.has(tgl)) { hadirLibur++; continue; }
-                if (day === 0 || day === 6) { bolos++; continue; }
                 const sudah = allData.absen.some(a => a.pegawaiId === idPegawai && a.tanggal === tgl);
-                if (!sudah) izin++;
+                if (!sudah) {
+                    if (day === 0 || day === 6) {
+                        bolos++; // weekend tanpa absen = bolos
+                    } else {
+                        izin++; // weekday tanpa absen = izin
+                    }
+                }
             }
             return { izin, bolos, hadirLibur };
         }
@@ -1481,6 +1425,7 @@
             const { izin, bolos, hadirLibur } = hitungIzinBolos(idPegawai, dari, sampai);
             totalHadir += hadirLibur;
 
+            // Detail untuk modal
             const detailIzin = [],
                 detailBolos = [],
                 detailLembur = [],
@@ -1498,38 +1443,39 @@
                 const a = absenMap[tgl];
                 if (isLibur) continue;
                 if (!a) {
-                    if (day === 0 || day === 6) detailBolos.push({ tanggal: tgl, keterangan: 'Weekend' });
-                    else detailIzin.push({ tanggal: tgl });
+                    if (day === 0 || day === 6) {
+                        detailBolos.push({ tanggal: tgl, keterangan: 'Weekend' });
+                    } else {
+                        detailIzin.push({ tanggal: tgl });
+                    }
                 } else {
-                    if (a.keterlambatan > 0) detailTelat.push({ tanggal: tgl, menit: a.keterlambatan });
+                    if (a.keterlambatan > 0) {
+                        detailTelat.push({ tanggal: tgl, menit: a.keterlambatan });
+                    }
                 }
             }
             lemburP.forEach(l => detailLembur.push({ tanggal: l.tanggal }));
 
+            // RINGKASAN
             const ringkasan = document.getElementById('ringkasan-laporan');
-            ringkasan.innerHTML =
-                `
-                        <h3 style="font-size:0.95rem;margin-bottom:8px;">📊 Ringkasan Laporan — ${pegawai.nama}</h3>
-                        <div class="dash-grid" style="grid-template-columns:1fr 1fr;">
-                            <div class="dash-card clickable-card" data-detail="izin" style="border-left-color:var(--warning);">
-                                <div class="number orange">${izin}</div>
-                                <div class="label">Total Izin</div>
-                                <span class="badge-click">👆</span>
+            ringkasan.innerHTML = `
+                        <h3 style="font-size:0.95rem;margin-bottom:8px;">Ringkasan Laporan — ${pegawai.nama}</h3>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <div class="dash-card clickable-card" data-detail="izin" style="border-left-color:var(--warning);cursor:pointer;">
+                                <div class="dash-number orange">${izin}</div>
+                                <div class="dash-label">Total Izin</div>
                             </div>
-                            <div class="dash-card clickable-card" data-detail="bolos" style="border-left-color:var(--danger);">
-                                <div class="number red">${bolos}</div>
-                                <div class="label">Total Bolos</div>
-                                <span class="badge-click">👆</span>
+                            <div class="dash-card clickable-card" data-detail="bolos" style="border-left-color:var(--danger);cursor:pointer;">
+                                <div class="dash-number red">${bolos}</div>
+                                <div class="dash-label">Total Bolos</div>
                             </div>
-                            <div class="dash-card clickable-card" data-detail="lembur" style="border-left-color:#9b59b6;">
-                                <div class="number" style="color:#9b59b6;">${lemburP.length}</div>
-                                <div class="label">Total Lembur</div>
-                                <span class="badge-click">👆</span>
+                            <div class="dash-card clickable-card" data-detail="lembur" style="border-left-color:#9b59b6;cursor:pointer;">
+                                <div class="dash-number" style="color:#9b59b6;">${lemburP.length}</div>
+                                <div class="dash-label">Total Lembur</div>
                             </div>
-                            <div class="dash-card clickable-card" data-detail="telat" style="border-left-color:#e67e22;">
-                                <div class="number orange">${totalTelat}</div>
-                                <div class="label">Total Keterlambatan</div>
-                                <span class="badge-click">👆</span>
+                            <div class="dash-card clickable-card" data-detail="telat" style="border-left-color:#e67e22;cursor:pointer;">
+                                <div class="dash-number orange">${totalTelat}</div>
+                                <div class="dash-label">Total Keterlambatan</div>
                             </div>
                         </div>
                         <div class="text-muted" style="font-size:0.85rem;margin-top:4px;">Total Hadir: ${totalHadir} | Total Menit Terlambat: ${totalMenitTelat}</div>
@@ -1537,6 +1483,7 @@
 
             ringkasan._detailData = { izin: detailIzin, bolos: detailBolos, lembur: detailLembur, telat: detailTelat };
 
+            // Event click card
             ringkasan.querySelectorAll('.clickable-card').forEach(card => {
                 card.addEventListener('click', function(e) {
                     const type = this.dataset.detail;
@@ -1551,14 +1498,14 @@
                             body = '<ul style="list-style:none;padding:0;">';
                             data.forEach(item => {
                                 body +=
-                                    `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">📅 ${item.tanggal} — <strong>${item.menit} menit</strong></li>`;
+                                    `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">${item.tanggal} — <strong>${item.menit} menit</strong></li>`;
                             });
                             body += '</ul>';
                         } else {
                             body = '<ul style="list-style:none;padding:0;">';
                             data.forEach(item => {
                                 body +=
-                                `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">📅 ${item.tanggal}</li>`;
+                                `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">${item.tanggal}</li>`;
                             });
                             body += '</ul>';
                         }
@@ -1569,8 +1516,9 @@
                 });
             });
 
+            // DETAIL TABEL
             const detailContainer = document.getElementById('detail-laporan');
-            detailContainer.innerHTML = '<h3 style="font-size:0.95rem;margin-top:12px;">📋 Detail Absen</h3>';
+            detailContainer.innerHTML = '<h3 style="font-size:0.95rem;margin-top:12px;">Detail Absen</h3>';
             const semua = [...absenP];
             for (let d = new Date(startD); d <= endD; d.setDate(d.getDate() + 1)) {
                 const tgl = formatDate(d);
@@ -1681,10 +1629,10 @@
                     refreshAllUI();
                 });
             }
-            let msg = `✅ Import selesai: ${berhasil} berhasil.`;
+            let msg = `Import selesai: ${berhasil} berhasil.`;
             if (gagal) msg += ` ${gagal} gagal.`;
             if (skipped) msg += ` ${skipped} dilewati.`;
-            if (errors.length) msg += `\n\n⚠️ ${errors.slice(0,5).join('\n')}`;
+            if (errors.length) msg += `\n\n${errors.slice(0,5).join('\n')}`;
             document.getElementById('import-status').innerHTML = `<p>${msg}</p>`;
             if (berhasil) {
                 renderAbsenTable(tanggal, 'log-absen-hari-ini');
@@ -1743,7 +1691,7 @@
         });
 
         // ============================================================
-        //  BACKUP / RESTORE (local)
+        //  BACKUP / RESTORE
         // ============================================================
         document.getElementById('backup-data').addEventListener('click', function() {
             const all = {
@@ -1763,7 +1711,7 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            document.getElementById('backup-status').innerHTML = '✅ Backup berhasil!';
+            document.getElementById('backup-status').innerHTML = 'Backup berhasil!';
         });
 
         document.getElementById('restore-data').addEventListener('click', function() {
@@ -1787,7 +1735,7 @@
                     allData.absen = data.absen;
                     allData.lembur = data.lembur;
                     saveAllDataToFirestore().then(() => {
-                        document.getElementById('backup-status').innerHTML = '✅ Restore berhasil!';
+                        document.getElementById('backup-status').innerHTML = 'Restore berhasil!';
                         document.getElementById('modal-restore').style.display = 'none';
                         refreshAllUI();
                     });
@@ -1797,7 +1745,7 @@
         });
 
         document.getElementById('reset-data').addEventListener('click', function() {
-            if (!confirm('⚠️ YAKIN? Semua data akan dihapus permanen!')) return;
+            if (!confirm('YAKIN? Semua data akan dihapus permanen!')) return;
             allData.pegawai = [];
             allData.shift = [];
             allData.libur = [];
@@ -1808,6 +1756,36 @@
                 alert('Data direset!');
             });
         });
+
+        // ============================================================
+        //  REFRESH UI
+        // ============================================================
+        function refreshAllUI() {
+            loadPegawaiDropdown(document.getElementById('absen-pegawai'));
+            loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
+            loadPegawaiDropdown(document.getElementById('edit-pegawai'));
+            loadShiftDropdown(document.getElementById('absen-shift'));
+            loadShiftDropdown(document.getElementById('import-shift'));
+            loadShiftDropdown(document.getElementById('edit-shift'));
+
+            renderPegawaiList();
+            renderShiftList();
+            renderLiburList();
+
+            const t = document.getElementById('absen-tanggal').value || today();
+            renderAbsenTable(t, 'log-absen-hari-ini');
+            renderLemburLog();
+            updateDashboard();
+
+            // datalist laporan
+            const datalist = document.getElementById('pegawai-datalist');
+            datalist.innerHTML = '';
+            allData.pegawai.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.nama;
+                datalist.appendChild(opt);
+            });
+        }
 
         // ============================================================
         //  DOM EVENTS
@@ -1821,7 +1799,7 @@
             document.getElementById('laporan-dari').value = t;
             document.getElementById('laporan-sampai').value = t;
 
-            // NAV BOTTOM
+            // NAV
             document.querySelectorAll('.nav-bottom .tab-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.nav-bottom .tab-btn').forEach(b => b.classList.remove('active'));
@@ -2041,6 +2019,67 @@
                 });
             });
 
+            // CLEAR BUTTONS
+            document.getElementById('clear-laporan-input').addEventListener('click', function() {
+                document.getElementById('laporan-pegawai-input').value = '';
+            });
+            document.getElementById('clear-import-data').addEventListener('click', function() {
+                document.getElementById('import-data').value = '';
+            });
+
+            // DASHBOARD CLICK DETAIL
+            document.querySelectorAll('.dash-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const type = this.dataset.detail;
+                    const data = window._dashData || {};
+                    let title = '',
+                        body = '';
+                    switch (type) {
+                        case 'total-pegawai':
+                            title = 'Total Pegawai';
+                            body = data.totalPegawai ? data.totalPegawai.map(n =>
+                                `<li>${n}</li>`).join('') : '<li>Tidak ada</li>';
+                            break;
+                        case 'hadir-hari':
+                            title = 'Hadir Hari Ini';
+                            body = data.hadirHari ? data.hadirHari.map(n =>
+                                `<li>${n}</li>`).join('') : '<li>Tidak ada</li>';
+                            break;
+                        case 'telat-hari':
+                            title = 'Terlambat Hari Ini';
+                            body = data.telatHari ? data.telatHari.map(n =>
+                                `<li>${n}</li>`).join('') : '<li>Tidak ada</li>';
+                            break;
+                        case 'bolos-hari':
+                            title = 'Tidak Absen Hari Ini';
+                            body = data.bolosHari ? data.bolosHari.map(n =>
+                                `<li>${n}</li>`).join('') : '<li>Tidak ada</li>';
+                            break;
+                        default:
+                            return;
+                    }
+                    document.getElementById('modal-dash-title').textContent = title;
+                    document.getElementById('modal-dash-body').innerHTML = `<ul style="list-style:none;padding:0;">${body}</ul>`;
+                    document.getElementById('modal-detail-dashboard').style.display = 'flex';
+                });
+            });
+
+            // GAJI CARD CLICK
+            document.getElementById('gaji-card').addEventListener('click', function() {
+                const pegawai = allData.pegawai;
+                const dayNow = new Date().getDate();
+                const gaji = pegawai.filter(p => p.tanggalGajian && Number(p.tanggalGajian) === dayNow);
+                let body = '';
+                if (gaji.length) {
+                    body = gaji.map(p => `<li>${p.nama}</li>`).join('');
+                } else {
+                    body = '<li>Tidak ada pegawai yang menerima gaji hari ini.</li>';
+                }
+                document.getElementById('modal-dash-title').textContent = 'Terima Gaji Hari Ini';
+                document.getElementById('modal-dash-body').innerHTML = `<ul style="list-style:none;padding:0;">${body}</ul>`;
+                document.getElementById('modal-detail-dashboard').style.display = 'flex';
+            });
+
             // ============================================================
             //  AUTH STATE
             // ============================================================
@@ -2077,4 +2116,4 @@
     </script>
 
 </body>
-</html>
+    </html>
