@@ -2,14 +2,20 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Absensi Pegawai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Absensi Pegawai Restoran</title>
     <meta name="theme-color" content="#2c3e50" />
-    <meta name="description" content="Sistem Absensi Pegawai Offline" />
+    <meta name="description" content="Sistem Absensi Pegawai Restoran" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
     <style>
         /* ===== RESET & VARIABEL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         :root {
             --primary: #2c3e50;
             --secondary: #27ae60;
@@ -18,152 +24,240 @@
             --light: #ecf0f1;
             --dark: #2c3e50;
             --info: #3498db;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --nav-height: 64px;
+            --radius: 10px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            background: #f4f6f9;
+            color: #222;
+            padding-bottom: calc(var(--nav-height) + 16px);
+            min-height: 100vh;
         }
         .container {
-            max-width: 100%;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 10px 12px 80px 12px;
         }
+
+        /* ===== HEADER ===== */
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        /* ===== TABS ===== */
-        .tabs {
+            background: var(--primary);
+            color: #fff;
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
             display: flex;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            justify-content: space-between;
             flex-wrap: wrap;
         }
-        .tab {
-            flex: 1;
-            min-width: 60px;
-            padding: 10px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s;
+        header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        header .badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
             font-weight: 500;
-            font-size: 14px;
         }
-        .tab.active {
-            background-color: var(--primary);
-            color: white;
-        }
+
+        /* ===== TAB CONTENT ===== */
         .tab-content {
             display: none;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+            background: #fff;
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            animation: fadeUp 0.25s ease;
         }
         .tab-content.active {
             display: block;
         }
-        /* ===== FORM ===== */
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== NAV BOTTOM (FIXED) ===== */
+        .nav-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: #fff;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            height: var(--nav-height);
+            padding: 0 4px;
+            align-items: stretch;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .nav-bottom .tab-btn {
+            background: transparent;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 4px 2px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .nav-bottom .tab-btn .icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+        .nav-bottom .tab-btn .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .nav-bottom .tab-btn.active {
+            color: var(--primary);
+            background: rgba(44, 62, 80, 0.06);
+        }
+        .nav-bottom .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 4px 4px;
+        }
+        .nav-bottom .tab-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
             font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: #444;
         }
         input,
         select,
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fafafa;
+            transition: 0.2s;
         }
-        input[type="number"] {
-            max-width: 120px;
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
         }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
         button {
-            background-color: var(--primary);
-            color: white;
+            background: var(--primary);
+            color: #fff;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         button:hover {
-            background-color: #34495e;
+            filter: brightness(1.08);
+        }
+        button:active {
+            transform: scale(0.97);
         }
         button.secondary {
-            background-color: var(--secondary);
-        }
-        button.secondary:hover {
-            background-color: #219653;
+            background: var(--secondary);
         }
         button.danger {
-            background-color: var(--danger);
-        }
-        button.danger:hover {
-            background-color: #c0392b;
+            background: var(--danger);
         }
         button.warning {
-            background-color: var(--warning);
-        }
-        button.warning:hover {
-            background-color: #e67e22;
+            background: var(--warning);
         }
         button.info {
-            background-color: var(--info);
+            background: var(--info);
         }
-        button.info:hover {
-            background-color: #2980b9;
+        button.small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
         }
+        button.block {
+            width: 100%;
+            justify-content: center;
+        }
+
         .action-buttons {
             display: flex;
-            gap: 5px;
+            gap: 8px;
             flex-wrap: wrap;
         }
-        .action-btn {
-            padding: 5px 10px;
-            font-size: 14px;
+        .action-buttons button {
+            flex: 1;
+            min-width: 80px;
         }
-        /* ===== CARDS ===== */
+
         .card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
             border-left: 4px solid var(--primary);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .card-title {
             font-weight: 600;
-            font-size: 18px;
+            font-size: 1rem;
         }
         .card-content {
             display: none;
@@ -174,6 +268,25 @@
         .card-content.active {
             display: block;
         }
+
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        .log-info {
+            flex: 1;
+        }
+        .log-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
         /* ===== STATUS ===== */
         .status-hadir {
             color: var(--secondary);
@@ -190,63 +303,91 @@
         .status-libur {
             color: var(--info);
         }
-        /* ===== LOG ===== */
-        .log-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .log-item:last-child {
-            border-bottom: none;
-        }
-        .log-info {
-            flex: 1;
-        }
-        .log-actions {
-            display: flex;
-            gap: 5px;
-        }
-        /* ===== SUMMARY ===== */
-        .report-summary {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .summary-item {
-            background-color: var(--light);
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .summary-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        .summary-value {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
+
         /* ===== TABEL ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 8px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            font-size: 0.88rem;
         }
         th,
         td {
-            padding: 10px;
+            padding: 8px 6px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
         }
         th {
-            background-color: #f2f2f2;
+            background: #f7f7f7;
             font-weight: 600;
+            color: #444;
         }
+
+        /* ===== DASHBOARD ===== */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .dash-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 14px 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        .dash-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .dash-card .label {
+            font-size: 0.78rem;
+            color: #777;
+            margin-top: 2px;
+        }
+        .dash-card.green {
+            border-left-color: var(--secondary);
+        }
+        .dash-card.orange {
+            border-left-color: var(--warning);
+        }
+        .dash-card.red {
+            border-left-color: var(--danger);
+        }
+        .dash-card.blue {
+            border-left-color: var(--info);
+        }
+        .dash-card .number.green {
+            color: var(--secondary);
+        }
+        .dash-card .number.orange {
+            color: var(--warning);
+        }
+        .dash-card .number.red {
+            color: var(--danger);
+        }
+        .dash-card .number.blue {
+            color: var(--info);
+        }
+
+        .gaji-card {
+            background: #fef9e7;
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            border-left: 4px solid var(--warning);
+            box-shadow: var(--shadow);
+        }
+        .gaji-card strong {
+            color: var(--warning);
+        }
+
         /* ===== MODAL ===== */
         .modal {
             display: none;
@@ -255,271 +396,311 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
             justify-content: center;
             align-items: center;
+            padding: 16px;
         }
         .modal-content {
-            background-color: white;
+            background: #fff;
             padding: 20px;
-            border-radius: 8px;
-            width: 90%;
+            border-radius: var(--radius);
             max-width: 500px;
+            width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeUp 0.25s ease;
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
         .modal-title {
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: 600;
         }
         .close-modal {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 1.6rem;
             cursor: pointer;
             color: #999;
+            line-height: 1;
+            padding: 0 4px;
         }
+        .close-modal:hover {
+            color: #333;
+        }
+
         /* ===== BACKUP ===== */
         .backup-section {
-            margin-top: 20px;
+            margin-top: 16px;
         }
         .backup-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 10px;
+            margin-top: 8px;
+        }
+        .backup-buttons button {
+            flex: 1;
+            min-width: 80px;
         }
         .import-format {
-            background-color: #f8f9fa;
+            background: #f8f9fa;
             padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-family: monospace;
-            font-size: 14px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
             white-space: pre-wrap;
+            margin-top: 6px;
+            border: 1px solid #eee;
         }
-        /* ===== DASHBOARD ===== */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .dashboard-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-left: 4px solid var(--primary);
-        }
-        .dashboard-card .number {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        .dashboard-card .label {
-            font-size: 14px;
-            color: #666;
-        }
-        .gaji-card {
-            background: #e8f5e9;
-            border-left-color: var(--secondary);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .gaji-card .label {
-            font-weight: 600;
-            color: var(--secondary);
-        }
+
         /* ===== AUTOCOMPLETE ===== */
-        datalist {
+        .autocomplete-wrap {
+            position: relative;
+        }
+        .autocomplete-wrap input {
+            width: 100%;
+        }
+        .autocomplete-wrap datalist {
             display: none;
         }
+
+        /* ===== LEMBUR LOG ===== */
+        .lembur-log {
+            margin-top: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+        .lembur-log .log-item {
+            padding: 6px 0;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
-            .tabs {
-                flex-direction: row;
-                flex-wrap: wrap;
+            .dash-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
             }
-            .tab {
-                flex: 1 0 30%;
-                font-size: 12px;
-                padding: 8px 4px;
+            .dash-card .number {
+                font-size: 1.4rem;
             }
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .nav-bottom .tab-btn .label {
+                font-size: 0.55rem;
             }
-            .report-summary {
-                grid-template-columns: 1fr;
+            .nav-bottom .tab-btn .icon {
+                font-size: 1.1rem;
+            }
+            :root {
+                --nav-height: 58px;
             }
             table {
-                font-size: 14px;
+                font-size: 0.78rem;
             }
             th,
             td {
-                padding: 8px 5px;
+                padding: 5px 4px;
             }
-            .backup-buttons {
-                flex-direction: column;
-            }
-            .action-buttons {
-                flex-direction: column;
+            .action-buttons button {
+                min-width: 60px;
+                font-size: 0.8rem;
             }
             button {
-                width: 100%;
-                margin-bottom: 5px;
+                font-size: 0.85rem;
+                padding: 8px 14px;
+            }
+            header h1 {
+                font-size: 1.1rem;
             }
         }
-        /* ===== LEMBUR LOG ===== */
-        .lembur-log-item {
+        @media (max-width: 380px) {
+            .nav-bottom .tab-btn .label {
+                font-size: 0.5rem;
+            }
+            .nav-bottom .tab-btn .icon {
+                font-size: 1rem;
+            }
+            :root {
+                --nav-height: 52px;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-between {
             display: flex;
             justify-content: space-between;
-            padding: 8px 12px;
-            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
         }
-        .lembur-log-item:last-child {
-            border-bottom: none;
+        .gap-8 {
+            gap: 8px;
         }
-        .lembur-log-item .tanggal {
-            font-weight: 500;
+        .gap-4 {
+            gap: 4px;
         }
-        .lembur-log-item .nama {
-            color: #555;
+        .wrap {
+            flex-wrap: wrap;
+        }
+
+        /* card clickable di laporan */
+        .clickable-card {
+            cursor: pointer;
+            transition: 0.15s;
+            position: relative;
+        }
+        .clickable-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .clickable-card:active {
+            transform: scale(0.97);
+        }
+        .clickable-card .badge-click {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: #aaa;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="app">
+
+        <!-- ===== HEADER ===== -->
         <header>
-            <h1>📋 Absensi Pegawai</h1>
+            <h1>📋 Absensi Restoran</h1>
+            <span class="badge" id="headerDate"></span>
         </header>
 
-        <!-- ===== TABS ===== -->
-        <div class="tabs">
-            <div class="tab active" data-tab="dashboard">📊 Dashboard</div>
-            <div class="tab" data-tab="absen">✅ Absen</div>
-            <div class="tab" data-tab="data-master">⚙️ Data Master</div>
-            <div class="tab" data-tab="lembur">⏰ Lembur</div>
-            <div class="tab" data-tab="cek-absen">🔍 Cek Absen</div>
-            <div class="tab" data-tab="laporan">📈 Laporan</div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- TAB DASHBOARD -->
-        <!-- ============================================================ -->
+        <!-- ===== TAB CONTENT: DASHBOARD ===== -->
         <div id="dashboard" class="tab-content active">
-            <h2 style="margin-bottom:10px;">📊 Dashboard</h2>
+            <h2 style="margin-bottom:12px;font-size:1.1rem;">📊 Dashboard</h2>
 
             <!-- Gaji hari ini -->
-            <div id="gaji-hari-ini" class="gaji-card">
-                <div class="label">💰 Gaji Hari Ini</div>
-                <div id="gaji-list" style="margin-top:5px;">Memuat...</div>
-            </div>
+            <div id="gaji-hari-ini" class="gaji-card" style="display:none;"></div>
 
-            <!-- Ringkasan hari ini -->
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <div class="number" id="dash-hadir">0</div>
-                    <div class="label">✅ Hadir</div>
+            <div class="dash-grid">
+                <div class="dash-card green">
+                    <div class="number green" id="dash-total-pegawai">0</div>
+                    <div class="label">Total Pegawai</div>
                 </div>
-                <div class="dashboard-card">
-                    <div class="number" id="dash-izin">0</div>
-                    <div class="label">📝 Izin</div>
+                <div class="dash-card blue">
+                    <div class="number blue" id="dash-hadir-hari-ini">0</div>
+                    <div class="label">Hadir Hari Ini</div>
                 </div>
-                <div class="dashboard-card">
-                    <div class="number" id="dash-bolos">0</div>
-                    <div class="label">❌ Bolos</div>
+                <div class="dash-card orange">
+                    <div class="number orange" id="dash-terlambat-hari-ini">0</div>
+                    <div class="label">Terlambat Hari Ini</div>
                 </div>
-                <div class="dashboard-card">
-                    <div class="number" id="dash-terlambat">0</div>
-                    <div class="label">⏰ Terlambat</div>
+                <div class="dash-card red">
+                    <div class="number red" id="dash-bolos-hari-ini">0</div>
+                    <div class="label">Bolos Hari Ini</div>
                 </div>
             </div>
 
-            <!-- Absen hari ini (tabel ringkas) -->
-            <h3 style="margin-top:10px;">📋 Absen Hari Ini</h3>
-            <div id="log-absen-hari-ini-dashboard"></div>
+            <div class="dash-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                <div class="dash-card" style="border-left-color:#9b59b6;">
+                    <div class="number" style="color:#9b59b6;" id="dash-lembur-30">0</div>
+                    <div class="label">Lembur (30hr)</div>
+                </div>
+                <div class="dash-card" style="border-left-color:#1abc9c;">
+                    <div class="number" style="color:#1abc9c;" id="dash-izin-30">0</div>
+                    <div class="label">Izin (30hr)</div>
+                </div>
+                <div class="dash-card" style="border-left-color:#e67e22;">
+                    <div class="number" style="color:#e67e22;" id="dash-bolos-30">0</div>
+                    <div class="label">Bolos (30hr)</div>
+                </div>
+            </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- TAB ABSEN -->
-        <!-- ============================================================ -->
+        <!-- ===== TAB CONTENT: ABSEN ===== -->
         <div id="absen" class="tab-content">
-            <div class="form-section">
-                <h2>Form Absen Perorangan</h2>
-                <div class="form-group">
-                    <label for="absen-tanggal">Tanggal Absen</label>
-                    <input type="date" id="absen-tanggal" />
-                </div>
-                <div class="form-group">
-                    <label for="absen-pegawai">Nama Pegawai</label>
-                    <select id="absen-pegawai"><option value="">Pilih Pegawai</option></select>
-                </div>
-                <div class="form-group">
-                    <label for="absen-shift">Shift</label>
-                    <select id="absen-shift"><option value="">Pilih Shift</option></select>
-                </div>
-                <div class="form-group">
-                    <label for="absen-jam">Jam Masuk</label>
-                    <input type="time" id="absen-jam" />
-                </div>
-                <button id="simpan-absen" class="secondary">Simpan Absen</button>
+            <h2 style="margin-bottom:12px;font-size:1.05rem;">✏️ Form Absen Perorangan</h2>
+            <div class="form-group">
+                <label for="absen-tanggal">Tanggal</label>
+                <input type="date" id="absen-tanggal" />
             </div>
-
-            <div class="form-section">
-                <h2>Import Manual Absen (Multiple)</h2>
-                <button id="toggle-import" class="info">📥 Buka Form Import Manual</button>
+            <div class="form-group">
+                <label for="absen-pegawai">Pegawai</label>
+                <select id="absen-pegawai"><option value="">Pilih Pegawai</option></select>
             </div>
+            <div class="form-group">
+                <label for="absen-shift">Shift</label>
+                <select id="absen-shift"><option value="">Pilih Shift</option></select>
+            </div>
+            <div class="form-group">
+                <label for="absen-jam">Jam Masuk</label>
+                <input type="time" id="absen-jam" />
+            </div>
+            <button id="simpan-absen" class="secondary block">Simpan Absen</button>
 
-            <h3 style="margin-top:20px;">Log Absen Hari Ini</h3>
+            <hr style="margin:18px 0;border-color:#eee;" />
+
+            <button id="toggle-import" class="info block" style="margin-bottom:12px;">📥 Import Manual Massal</button>
+
+            <h3 style="margin-top:16px;font-size:0.95rem;">📋 Log Absen Hari Ini</h3>
             <div id="log-absen-hari-ini"></div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- TAB DATA MASTER -->
-        <!-- ============================================================ -->
+        <!-- ===== TAB CONTENT: DATA MASTER ===== -->
         <div id="data-master" class="tab-content">
-            <h2>Data Master</h2>
+            <h2 style="margin-bottom:12px;font-size:1.05rem;">⚙️ Data Master</h2>
 
-            <!-- PEGAWAI -->
+            <!-- Pegawai -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">👤 Data Pegawai</div>
-                    <button class="action-btn" id="toggle-pegawai">Edit</button>
+                    <button class="small" id="toggle-pegawai">Edit</button>
                 </div>
                 <div class="card-content" id="pegawai-content">
                     <div class="form-group">
-                        <label for="pegawai-nama">Nama Pegawai</label>
-                        <input type="text" id="pegawai-nama" placeholder="Masukkan nama" />
+                        <label for="pegawai-nama">Nama</label>
+                        <input type="text" id="pegawai-nama" placeholder="Nama pegawai" />
                     </div>
                     <div class="form-group">
-                        <label for="pegawai-tanggal-gaji">Tanggal Gajian (1–31)</label>
-                        <input type="number" id="pegawai-tanggal-gaji" min="1" max="31" placeholder="Misal: 25" />
+                        <label for="pegawai-gajian">Tanggal Gajian (tanggal saja, 1-31)</label>
+                        <input type="number" id="pegawai-gajian" placeholder="Contoh: 15" min="1" max="31" />
                     </div>
                     <div class="action-buttons">
-                        <button class="action-btn secondary" id="tambah-pegawai">Tambah</button>
-                        <button class="action-btn danger" id="hapus-pegawai">Hapus</button>
+                        <button class="secondary" id="tambah-pegawai">Tambah</button>
+                        <button class="danger" id="hapus-pegawai">Hapus</button>
                     </div>
-                    <div id="daftar-pegawai" style="margin-top:15px;"></div>
+                    <div id="daftar-pegawai" class="mt-8"></div>
                 </div>
             </div>
 
-            <!-- SHIFT -->
+            <!-- Shift -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">🕒 Data Shift</div>
-                    <button class="action-btn" id="toggle-shift">Edit</button>
+                    <button class="small" id="toggle-shift">Edit</button>
                 </div>
                 <div class="card-content" id="shift-content">
                     <div class="form-group">
@@ -531,219 +712,194 @@
                         <input type="time" id="shift-jam" />
                     </div>
                     <div class="action-buttons">
-                        <button class="action-btn secondary" id="tambah-shift">Tambah</button>
-                        <button class="action-btn danger" id="hapus-shift">Hapus</button>
+                        <button class="secondary" id="tambah-shift">Tambah</button>
+                        <button class="danger" id="hapus-shift">Hapus</button>
                     </div>
-                    <div id="daftar-shift" style="margin-top:15px;"></div>
+                    <div id="daftar-shift" class="mt-8"></div>
                 </div>
             </div>
 
-            <!-- LIBUR -->
+            <!-- Libur -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">📅 Tanggal Libur</div>
-                    <button class="action-btn" id="toggle-libur">Edit</button>
+                    <button class="small" id="toggle-libur">Edit</button>
                 </div>
                 <div class="card-content" id="libur-content">
                     <div class="form-group">
-                        <label for="libur-tanggal">Tanggal Libur</label>
+                        <label for="libur-tanggal">Tanggal</label>
                         <input type="date" id="libur-tanggal" />
                     </div>
                     <div class="action-buttons">
-                        <button class="action-btn secondary" id="tambah-libur">Tambah</button>
-                        <button class="action-btn danger" id="hapus-libur">Hapus</button>
+                        <button class="secondary" id="tambah-libur">Tambah</button>
+                        <button class="danger" id="hapus-libur">Hapus</button>
                     </div>
-                    <div id="daftar-libur" style="margin-top:15px;"></div>
+                    <div id="daftar-libur" class="mt-8"></div>
                 </div>
             </div>
 
-            <!-- BACKUP -->
+            <!-- Backup -->
             <div class="card backup-section">
                 <div class="card-header">
-                    <div class="card-title">💾 Backup &amp; Restore</div>
+                    <div class="card-title">💾 Backup & Restore</div>
                 </div>
                 <div class="card-content active">
-                    <p>Backup dan restore semua data absensi.</p>
                     <div class="backup-buttons">
-                        <button class="secondary" id="backup-data">Backup Data</button>
-                        <button class="warning" id="restore-data">Restore Data</button>
-                        <button class="danger" id="reset-data">Reset Semua Data</button>
+                        <button class="secondary" id="backup-data">Backup</button>
+                        <button class="warning" id="restore-data">Restore</button>
+                        <button class="danger" id="reset-data">Reset Semua</button>
                     </div>
-                    <div id="backup-status" style="margin-top:10px;"></div>
+                    <div id="backup-status" class="mt-8 text-muted"></div>
                 </div>
             </div>
 
-            <button id="simpan-data-master" class="secondary" style="margin-top:15px;">Simpan Perubahan</button>
+            <button id="simpan-data-master" class="secondary block">Simpan Perubahan</button>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- TAB LEMBUR -->
-        <!-- ============================================================ -->
+        <!-- ===== TAB CONTENT: LEMBUR ===== -->
         <div id="lembur" class="tab-content">
-            <h2>⏰ Form Lembur</h2>
+            <h2 style="margin-bottom:12px;font-size:1.05rem;">⏰ Form Lembur</h2>
             <div class="form-group">
                 <label for="lembur-tanggal">Tanggal Lembur</label>
                 <input type="date" id="lembur-tanggal" />
             </div>
             <div class="form-group">
-                <label for="lembur-pegawai">Nama Pegawai</label>
+                <label for="lembur-pegawai">Pegawai</label>
                 <select id="lembur-pegawai"><option value="">Pilih Pegawai</option></select>
             </div>
-            <button id="simpan-lembur" class="secondary">Simpan Lembur</button>
+            <button id="simpan-lembur" class="secondary block">Simpan Lembur</button>
 
-            <!-- Log Lembur 30 Hari Terakhir -->
-            <h3 style="margin-top:30px;">📋 Log Lembur 30 Hari Terakhir</h3>
-            <div id="log-lembur-30"></div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- TAB CEK ABSEN -->
-        <!-- ============================================================ -->
-        <div id="cek-absen" class="tab-content">
-            <h2>🔍 Cek Data Absen</h2>
-            <div class="form-group">
-                <label for="cek-tanggal">Pilih Tanggal</label>
-                <input type="date" id="cek-tanggal" />
+            <!-- Log lembur 30 hari -->
+            <div class="lembur-log">
+                <h3 style="font-size:0.95rem;">📋 Lembur 30 Hari Terakhir</h3>
+                <div id="log-lembur-30" class="mt-8"></div>
             </div>
-            <button id="tampilkan-absen" class="secondary">Tampilkan Absen</button>
-            <div id="log-absen-tanggal" style="margin-top:15px;"></div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- TAB LAPORAN -->
-        <!-- ============================================================ -->
+        <!-- ===== TAB CONTENT: LAPORAN ===== -->
         <div id="laporan" class="tab-content">
-            <h2>📈 Laporan Absen</h2>
+            <h2 style="margin-bottom:12px;font-size:1.05rem;">📄 Laporan & Cek Absen</h2>
 
-            <div class="form-group">
-                <label for="laporan-pegawai-input">Nama Pegawai</label>
-                <input type="text" id="laporan-pegawai-input" placeholder="Ketik nama pegawai..." list="laporan-pegawai-list" autocomplete="off" />
-                <datalist id="laporan-pegawai-list"></datalist>
+            <!-- Cek Absen per Tanggal -->
+            <div class="card" style="border-left-color:var(--info);">
+                <div class="card-header">
+                    <div class="card-title">🔍 Cek Absen per Tanggal</div>
+                </div>
+                <div class="form-group" style="margin-bottom:8px;">
+                    <label for="cek-tanggal">Tanggal</label>
+                    <input type="date" id="cek-tanggal" />
+                </div>
+                <button id="tampilkan-absen" class="info block small">Tampilkan</button>
+                <div id="log-absen-tanggal" class="mt-8"></div>
             </div>
 
-            <div class="form-group">
-                <label for="laporan-dari">Dari Tanggal</label>
-                <input type="date" id="laporan-dari" />
-            </div>
-            <div class="form-group">
-                <label for="laporan-sampai">Sampai Tanggal</label>
-                <input type="date" id="laporan-sampai" />
-            </div>
-            <button id="buat-laporan" class="secondary">Buat Laporan</button>
+            <!-- Laporan Periode -->
+            <div class="card" style="border-left-color:var(--secondary);">
+                <div class="card-header">
+                    <div class="card-title">📊 Laporan Periode</div>
+                </div>
+                <div class="form-group">
+                    <label for="laporan-pegawai-input">Nama Pegawai</label>
+                    <div class="autocomplete-wrap">
+                        <input type="text" id="laporan-pegawai-input" placeholder="Ketik nama..." autocomplete="off" list="pegawai-datalist" />
+                        <datalist id="pegawai-datalist"></datalist>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="laporan-dari">Dari</label>
+                    <input type="date" id="laporan-dari" />
+                </div>
+                <div class="form-group">
+                    <label for="laporan-sampai">Sampai</label>
+                    <input type="date" id="laporan-sampai" />
+                </div>
+                <button id="buat-laporan" class="secondary block">Buat Laporan</button>
 
-            <div id="ringkasan-laporan" style="margin-top:15px;"></div>
-            <div id="detail-laporan" style="margin-top:15px;"></div>
+                <div id="ringkasan-laporan" class="mt-8"></div>
+                <div id="detail-laporan" class="mt-8"></div>
+            </div>
         </div>
-    </div>
 
-    <!-- ============================================================ -->
-    <!-- MODAL EDIT ABSEN -->
-    <!-- ============================================================ -->
+    </div><!-- /container -->
+
+    <!-- ===== NAVIGATION BOTTOM ===== -->
+    <nav class="nav-bottom" id="navBottom">
+        <button class="tab-btn active" data-tab="dashboard"><span class="icon">📊</span><span class="label">Dashboard</span></button>
+        <button class="tab-btn" data-tab="absen"><span class="icon">✏️</span><span class="label">Absen</span></button>
+        <button class="tab-btn" data-tab="data-master"><span class="icon">⚙️</span><span class="label">Master</span></button>
+        <button class="tab-btn" data-tab="lembur"><span class="icon">⏰</span><span class="label">Lembur</span></button>
+        <button class="tab-btn" data-tab="laporan"><span class="icon">📄</span><span class="label">Laporan</span></button>
+    </nav>
+
+    <!-- ===== MODAL EDIT ABSEN ===== -->
     <div id="modal-edit-absen" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">✏️ Edit Data Absen</div>
+                <div class="modal-title">✏️ Edit Absen</div>
                 <button class="close-modal">&times;</button>
             </div>
-            <div class="form-group">
-                <label for="edit-pegawai">Nama Pegawai</label>
-                <select id="edit-pegawai"><option value="">Pilih Pegawai</option></select>
-            </div>
-            <div class="form-group">
-                <label for="edit-shift">Shift</label>
-                <select id="edit-shift"><option value="">Pilih Shift</option></select>
-            </div>
-            <div class="form-group">
-                <label for="edit-jam">Jam Masuk</label>
-                <input type="time" id="edit-jam" />
-            </div>
-            <button id="simpan-edit-absen" class="secondary">Simpan Perubahan</button>
+            <div class="form-group"><label>Pegawai</label><select id="edit-pegawai"><option value="">Pilih</option></select></div>
+            <div class="form-group"><label>Shift</label><select id="edit-shift"><option value="">Pilih</option></select></div>
+            <div class="form-group"><label>Jam Masuk</label><input type="time" id="edit-jam" /></div>
+            <button id="simpan-edit-absen" class="secondary block">Simpan Perubahan</button>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MODAL RESTORE -->
-    <!-- ============================================================ -->
+    <!-- ===== MODAL RESTORE ===== -->
     <div id="modal-restore" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">📂 Restore Data</div>
                 <button class="close-modal">&times;</button>
             </div>
-            <div class="form-group">
-                <label for="restore-file">Pilih File Backup</label>
-                <input type="file" id="restore-file" accept=".json" />
-            </div>
-            <div class="form-group">
-                <p><strong>⚠️ Peringatan:</strong> Restore akan menggantikan semua data yang ada.</p>
-            </div>
-            <button id="proses-restore" class="warning">Proses Restore</button>
+            <div class="form-group"><label>Pilih File Backup</label><input type="file" id="restore-file" accept=".json" /></div>
+            <p style="font-size:0.85rem;color:#e67e22;margin-bottom:12px;">⚠️ Restore akan menggantikan semua data saat ini.</p>
+            <button id="proses-restore" class="warning block">Proses Restore</button>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MODAL IMPORT MANUAL -->
-    <!-- ============================================================ -->
+    <!-- ===== MODAL IMPORT MANUAL ===== -->
     <div id="modal-import-manual" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">📥 Import Manual Absen</div>
+                <div class="modal-title">📥 Import Manual Massal</div>
                 <button class="close-modal">&times;</button>
             </div>
+            <div class="form-group"><label>Tanggal</label><input type="date" id="import-tanggal" /></div>
+            <div class="form-group"><label>Shift</label><select id="import-shift"><option value="">Pilih Shift</option></select></div>
             <div class="form-group">
-                <label for="import-tanggal">Tanggal Absen</label>
-                <input type="date" id="import-tanggal" />
+                <label>Data (format: Nama, Jam atau Nama, Lembur)</label>
+                <textarea id="import-data" rows="8" placeholder="Contoh:&#10;Adi, 07:21&#10;Mei, 08:00&#10;Budi, Lembur&#10;Siti, 07:59"></textarea>
+                <div class="import-format">Adi, 07:21\nMei, 08:00\nBudi, Lembur\nSiti, 07:59</div>
             </div>
             <div class="form-group">
-                <label for="import-shift">Shift</label>
-                <select id="import-shift"><option value="">Pilih Shift</option></select>
-            </div>
-            <div class="form-group">
-                <label for="import-data">Data Pegawai</label>
-                <textarea id="import-data" rows="10" placeholder="Format: NAMA, JAM&#10;Contoh:&#10;Adi, 07:21&#10;Mei, 08:00&#10;Ani, Lembur"></textarea>
-                <small>Satu baris satu pegawai. Gunakan <strong>NAMA, Lembur</strong> untuk mencatat lembur.</small>
-            </div>
-            <div class="form-group">
-                <label>Contoh Format:</label>
-                <div class="import-format">Adi, 07:21
-Mei, 08:00
-Budi, 08:15
-Siti, 07:59
-Ani, Lembur</div>
-            </div>
-            <div class="form-group">
-                <label for="import-duplicate-action">Jika pegawai sudah absen:</label>
+                <label>Jika sudah absen</label>
                 <select id="import-duplicate-action">
-                    <option value="skip">Lewati (tidak disimpan)</option>
-                    <option value="replace">Ganti data lama</option>
+                    <option value="skip">Lewati</option>
+                    <option value="replace">Ganti</option>
                 </select>
             </div>
-            <button id="proses-import" class="secondary">Proses Import</button>
-            <button id="reset-import" class="danger" style="margin-top:10px;">Reset Form</button>
-            <div id="import-status" style="margin-top:15px;"></div>
+            <button id="proses-import" class="secondary block">Proses Import</button>
+            <button id="reset-import" class="danger block mt-8" style="margin-top:8px;">Reset Form</button>
+            <div id="import-status" class="mt-8 text-muted"></div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MODAL DETAIL RINGKASAN LAPORAN -->
-    <!-- ============================================================ -->
-    <div id="modal-detail-ringkasan" class="modal">
+    <!-- ===== MODAL DETAIL LAPORAN ===== -->
+    <div id="modal-detail-laporan" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title" id="detail-ringkasan-title">Detail</div>
+                <div class="modal-title" id="modal-detail-title">Detail</div>
                 <button class="close-modal">&times;</button>
             </div>
-            <div id="detail-ringkasan-body" style="margin-top:10px;"></div>
+            <div id="modal-detail-body" style="max-height:60vh;overflow-y:auto;"></div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================================ -->
     <script>
-        // =================================================================
-        // KONSTANTA & UTILITY
-        // =================================================================
+        // ============================================================
+        //  DATA STORAGE
+        // ============================================================
         const STORAGE_KEYS = {
             PEGAWAI: 'absen_pegawai',
             SHIFT: 'absen_shift',
@@ -752,180 +908,533 @@ Ani, Lembur</div>
             LEMBUR: 'absen_lembur'
         };
 
-        let absenIdSedangDiedit = null;
+        function getData(key) { return JSON.parse(localStorage.getItem(key)) || []; }
 
-        function getData(key) {
-            return JSON.parse(localStorage.getItem(key)) || [];
+        function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        function initData() {
+            Object.values(STORAGE_KEYS).forEach(k => { if (!localStorage.getItem(k)) saveData(k, []); });
+        }
+        initData();
+
+        // ============================================================
+        //  HELPERS
+        // ============================================================
+        function today() { return new Date().toISOString().split('T')[0]; }
+
+        function todayDate() { return new Date(); }
+
+        function formatDate(d) { return d.toISOString().split('T')[0]; }
+
+        function daysAgo(n) { const d = new Date();
+            d.setDate(d.getDate() - n); return formatDate(d); }
+
+        function getPegawaiById(id) { return getData(STORAGE_KEYS.PEGAWAI).find(p => p.id === id); }
+
+        function getShiftById(id) { return getData(STORAGE_KEYS.SHIFT).find(s => s.id === id); }
+
+        function getPegawaiByName(nama) {
+            return getData(STORAGE_KEYS.PEGAWAI).find(p => p.nama.toLowerCase().trim() === nama.toLowerCase().trim());
         }
 
-        function saveData(key, data) {
-            localStorage.setItem(key, JSON.stringify(data));
-        }
+        function getAbsenByTanggal(tgl) { return getData(STORAGE_KEYS.ABSEN).filter(a => a.tanggal === tgl); }
 
-        function initializeData() {
-            if (!localStorage.getItem(STORAGE_KEYS.PEGAWAI)) saveData(STORAGE_KEYS.PEGAWAI, []);
-            if (!localStorage.getItem(STORAGE_KEYS.SHIFT)) saveData(STORAGE_KEYS.SHIFT, []);
-            if (!localStorage.getItem(STORAGE_KEYS.LIBUR)) saveData(STORAGE_KEYS.LIBUR, []);
-            if (!localStorage.getItem(STORAGE_KEYS.ABSEN)) saveData(STORAGE_KEYS.ABSEN, []);
-            if (!localStorage.getItem(STORAGE_KEYS.LEMBUR)) saveData(STORAGE_KEYS.LEMBUR, []);
-        }
+        function getLemburByTanggal(tgl) { return getData(STORAGE_KEYS.LEMBUR).filter(l => l.tanggal === tgl); }
 
-        function formatTanggal(dateStr) {
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        }
-
-        function hariIni() {
-            return new Date().toISOString().split('T')[0];
-        }
-
-        // =================================================================
-        // LOAD DROPDOWN
-        // =================================================================
-        function loadPegawaiDropdown(selectElement) {
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-            selectElement.innerHTML = '<option value="">Pilih Pegawai</option>';
-            pegawai.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.id;
-                opt.textContent = p.nama;
-                selectElement.appendChild(opt);
-            });
-        }
-
-        function loadShiftDropdown(selectElement) {
-            const shift = getData(STORAGE_KEYS.SHIFT);
-            selectElement.innerHTML = '<option value="">Pilih Shift</option>';
-            shift.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.textContent = `${s.nama} (${s.jam})`;
-                selectElement.appendChild(opt);
-            });
-        }
-
-        // =================================================================
-        // TAMPILKAN DAFTAR (Pegawai, Shift, Libur)
-        // =================================================================
-        function displayPegawaiList() {
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-            const container = document.getElementById('daftar-pegawai');
-            container.innerHTML = '';
-            pegawai.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'log-item';
-                const gaji = p.tanggal_gaji ? ` (Gaji tgl ${p.tanggal_gaji})` : '';
-                div.innerHTML = `
-                    <div class="log-info"><strong>${p.nama}</strong>${gaji}</div>
-                    <div class="log-actions"><input type="radio" name="selected-pegawai" value="${p.id}" /></div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function displayShiftList() {
-            const shift = getData(STORAGE_KEYS.SHIFT);
-            const container = document.getElementById('daftar-shift');
-            container.innerHTML = '';
-            shift.forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'log-item';
-                div.innerHTML = `
-                    <div class="log-info"><strong>${s.nama}</strong> - ${s.jam}</div>
-                    <div class="log-actions"><input type="radio" name="selected-shift" value="${s.id}" /></div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function displayLiburList() {
-            const libur = getData(STORAGE_KEYS.LIBUR);
-            const container = document.getElementById('daftar-libur');
-            container.innerHTML = '';
-            libur.forEach(l => {
-                const div = document.createElement('div');
-                div.className = 'log-item';
-                div.innerHTML = `
-                    <div class="log-info"><strong>${formatTanggal(l)}</strong></div>
-                    <div class="log-actions"><input type="radio" name="selected-libur" value="${l}" /></div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // =================================================================
-        // FUNGSI ABSEN
-        // =================================================================
+        // ============================================================
+        //  HITUNG KETERLAMBATAN & STATUS
+        // ============================================================
         function hitungKeterlambatan(jamAbsen, jamShift) {
-            const [jA, mA] = jamAbsen.split(':').map(Number);
-            const [jS, mS] = jamShift.split(':').map(Number);
-            const totalA = jA * 60 + mA;
-            const totalS = jS * 60 + mS;
-            if (totalA > totalS + 5) return totalA - totalS;
-            return 0;
+            const [hA, mA] = jamAbsen.split(':').map(Number);
+            const [hS, mS] = jamShift.split(':').map(Number);
+            const totalA = hA * 60 + mA,
+                totalS = hS * 60 + mS;
+            return totalA > totalS + 5 ? totalA - totalS : 0;
         }
 
         function tentukanStatus(tanggal, jamAbsen, jamShift) {
             const libur = getData(STORAGE_KEYS.LIBUR);
-            if (libur.includes(tanggal)) {
-                return { status: 'Hadir (Libur)', keterlambatan: 0 };
-            }
+            if (libur.includes(tanggal)) return { status: 'Hadir (Libur)', keterlambatan: 0 };
             const telat = hitungKeterlambatan(jamAbsen, jamShift);
             if (telat > 0) return { status: 'Hadir (Terlambat)', keterlambatan: telat };
             return { status: 'Hadir', keterlambatan: 0 };
         }
 
-        function displayLogAbsen(tanggal, containerId) {
+        // ============================================================
+        //  RENDER FUNGSI
+        // ============================================================
+        function loadPegawaiDropdown(el) {
+            const data = getData(STORAGE_KEYS.PEGAWAI);
+            el.innerHTML = '<option value="">Pilih Pegawai</option>';
+            data.forEach(p => { const o = document.createElement('option');
+                o.value = p.id;
+                o.textContent = p.nama;
+                el.appendChild(o); });
+        }
+
+        function loadShiftDropdown(el) {
+            const data = getData(STORAGE_KEYS.SHIFT);
+            el.innerHTML = '<option value="">Pilih Shift</option>';
+            data.forEach(s => { const o = document.createElement('option');
+                o.value = s.id;
+                o.textContent = s.nama + ' (' + s.jam + ')';
+                el.appendChild(o); });
+        }
+
+        function renderPegawaiList() {
+            const data = getData(STORAGE_KEYS.PEGAWAI);
+            const c = document.getElementById('daftar-pegawai');
+            c.innerHTML = '';
+            data.forEach(p => {
+                const d = document.createElement('div');
+                d.className = 'log-item';
+                d.innerHTML =
+                    `<div class="log-info"><strong>${p.nama}</strong> ${p.tanggalGajian ? '💰 '+p.tanggalGajian : ''}</div>
+                            <div class="log-actions"><input type="radio" name="selected-pegawai" value="${p.id}" /></div>`;
+                c.appendChild(d);
+            });
+        }
+
+        function renderShiftList() {
+            const data = getData(STORAGE_KEYS.SHIFT);
+            const c = document.getElementById('daftar-shift');
+            c.innerHTML = '';
+            data.forEach(s => {
+                const d = document.createElement('div');
+                d.className = 'log-item';
+                d.innerHTML =
+                    `<div class="log-info"><strong>${s.nama}</strong> - ${s.jam}</div>
+                            <div class="log-actions"><input type="radio" name="selected-shift" value="${s.id}" /></div>`;
+                c.appendChild(d);
+            });
+        }
+
+        function renderLiburList() {
+            const data = getData(STORAGE_KEYS.LIBUR);
+            const c = document.getElementById('daftar-libur');
+            c.innerHTML = '';
+            data.forEach(l => {
+                const d = document.createElement('div');
+                d.className = 'log-item';
+                d.innerHTML =
+                    `<div class="log-info"><strong>${l}</strong></div>
+                            <div class="log-actions"><input type="radio" name="selected-libur" value="${l}" /></div>`;
+                c.appendChild(d);
+            });
+        }
+
+        function renderAbsenTable(tanggal, containerId) {
             const absen = getData(STORAGE_KEYS.ABSEN);
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-            const shift = getData(STORAGE_KEYS.SHIFT);
             const data = absen.filter(a => a.tanggal === tanggal);
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            if (!data.length) {
-                container.innerHTML = '<p>Tidak ada data absen untuk tanggal ini.</p>';
-                return;
-            }
+            const c = document.getElementById(containerId);
+            c.innerHTML = '';
+            if (!data.length) { c.innerHTML = '<p class="text-muted">Belum ada absen untuk tanggal ini.</p>'; return; }
             const table = document.createElement('table');
-            table.innerHTML = `
-                <thead><tr><th>Nama</th><th>Shift</th><th>Jam</th><th>Status</th><th>Aksi</th></tr></thead>
-                <tbody></tbody>
-            `;
+            table.innerHTML =
+                `<thead><tr><th>Pegawai</th><th>Shift</th><th>Jam</th><th>Status</th><th>Aksi</th></tr></thead><tbody></tbody>`;
             const tbody = table.querySelector('tbody');
             data.forEach(a => {
-                const p = pegawai.find(x => x.id === a.pegawaiId);
-                const s = shift.find(x => x.id === a.shiftId);
+                const p = getPegawaiById(a.pegawaiId);
+                const s = getShiftById(a.shiftId);
                 if (!p || !s) return;
                 let cls = '';
                 if (a.status.includes('Hadir')) cls = a.status.includes('Libur') ? 'status-libur' : 'status-hadir';
                 else if (a.status.includes('Izin')) cls = 'status-izin';
                 else if (a.status.includes('Bolos')) cls = 'status-bolos';
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${p.nama}</td>
-                    <td>${s.nama} (${s.jam})</td>
-                    <td>${a.jam}</td>
-                    <td class="${cls}">${a.status}${a.keterlambatan > 0 ? ` (${a.keterlambatan} menit)` : ''}</td>
-                    <td>
-                        <button class="action-btn" onclick="bukaModalEditAbsen('${a.id}')">Edit</button>
-                        <button class="action-btn danger" onclick="hapusAbsen('${a.id}','${tanggal}','${containerId}')">Hapus</button>
-                    </td>
-                `;
+                tr.innerHTML =
+                    `<td>${p.nama}</td><td>${s.nama}</td><td>${a.jam}</td>
+                            <td class="${cls}">${a.status}${a.keterlambatan>0?' ('+a.keterlambatan+' mnt)':''}</td>
+                            <td>
+                                <button class="small" onclick="bukaEditAbsen('${a.id}')">Edit</button>
+                                <button class="small danger" onclick="hapusAbsen('${a.id}','${tanggal}','${containerId}')">Hapus</button>
+                            </td>`;
                 tbody.appendChild(tr);
             });
-            container.appendChild(table);
+            c.appendChild(table);
         }
 
-        function hapusAbsen(id, tanggal, containerId) {
-            if (!confirm('Yakin hapus data ini?')) return;
-            let absen = getData(STORAGE_KEYS.ABSEN);
-            absen = absen.filter(a => a.id !== id);
-            saveData(STORAGE_KEYS.ABSEN, absen);
-            displayLogAbsen(tanggal, containerId);
-            alert('Data absen dihapus!');
+        function renderLemburLog() {
+            const data = getData(STORAGE_KEYS.LEMBUR);
+            const cutoff = daysAgo(30);
+            const filtered = data.filter(l => l.tanggal >= cutoff).sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+            const c = document.getElementById('log-lembur-30');
+            c.innerHTML = '';
+            if (!filtered.length) { c.innerHTML = '<p class="text-muted">Tidak ada lembur dalam 30 hari terakhir.</p>'; return; }
+            const list = document.createElement('div');
+            filtered.forEach(l => {
+                const p = getPegawaiById(l.pegawaiId);
+                const d = document.createElement('div');
+                d.className = 'log-item';
+                d.innerHTML =
+                    `<div class="log-info"><strong>${p ? p.nama : '?'}</strong> — ${l.tanggal}</div>`;
+                list.appendChild(d);
+            });
+            c.appendChild(list);
         }
 
-        function bukaModalEditAbsen(id) {
+        function updateDashboard() {
+            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const lembur = getData(STORAGE_KEYS.LEMBUR);
+            const hariIni = today();
+            const tglNow = new Date();
+            const dayNow = tglNow.getDate();
+
+            // Total pegawai
+            document.getElementById('dash-total-pegawai').textContent = pegawai.length;
+
+            // Hadir hari ini
+            const absenHari = absen.filter(a => a.tanggal === hariIni);
+            const hadir = absenHari.filter(a => a.status.includes('Hadir'));
+            document.getElementById('dash-hadir-hari-ini').textContent = hadir.length;
+
+            // Terlambat hari ini
+            const telat = absenHari.filter(a => a.keterlambatan > 0);
+            document.getElementById('dash-terlambat-hari-ini').textContent = telat.length;
+
+            // Bolos hari ini: pegawai yang tidak absen dan bukan libur
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            const isLibur = libur.includes(hariIni);
+            let bolos = 0;
+            if (!isLibur) {
+                const hadirIds = new Set(absenHari.map(a => a.pegawaiId));
+                pegawai.forEach(p => { if (!hadirIds.has(p.id)) bolos++; });
+            }
+            document.getElementById('dash-bolos-hari-ini').textContent = bolos;
+
+            // Lembur 30 hari
+            const cutoff = daysAgo(30);
+            const lembur30 = lembur.filter(l => l.tanggal >= cutoff);
+            document.getElementById('dash-lembur-30').textContent = lembur30.length;
+
+            // Izin 30 hari (dihitung dari absen dengan status Izin)
+            const absen30 = absen.filter(a => a.tanggal >= cutoff);
+            const izin30 = absen30.filter(a => a.status.includes('Izin'));
+            document.getElementById('dash-izin-30').textContent = izin30.length;
+
+            // Bolos 30 hari (pegawai yang tidak absen pada hari kerja)
+            // estimasi sederhana: hitung hari kerja dalam 30 hari terakhir - absen hadir
+            // lebih akurat: loop hari
+            let totalBolos30 = 0;
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
+            const endDate = new Date();
+            const liburSet = new Set(getData(STORAGE_KEYS.LIBUR));
+            const pegawaiIds = pegawai.map(p => p.id);
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                const tgl = formatDate(d);
+                if (liburSet.has(tgl)) continue;
+                const day = d.getDay();
+                if (day === 0 || day === 6) continue; // weekend
+                const absenTgl = absen.filter(a => a.tanggal === tgl);
+                const hadirIds = new Set(absenTgl.filter(a => a.status.includes('Hadir')).map(a => a.pegawaiId));
+                pegawaiIds.forEach(id => { if (!hadirIds.has(id)) totalBolos30++; });
+            }
+            document.getElementById('dash-bolos-30').textContent = totalBolos30;
+
+            // Gaji hari ini
+            const gajiDiv = document.getElementById('gaji-hari-ini');
+            const pegawaiGaji = pegawai.filter(p => p.tanggalGajian && Number(p.tanggalGajian) === dayNow);
+            if (pegawaiGaji.length) {
+                const nama = pegawaiGaji.map(p => p.nama).join(' dan ');
+                gajiDiv.innerHTML =
+                    `💰 <strong>${nama}</strong> terima gaji hari ini! 🎉`;
+                gajiDiv.style.display = 'block';
+            } else {
+                gajiDiv.style.display = 'none';
+            }
+        }
+
+        // ============================================================
+        //  LAPORAN
+        // ============================================================
+        function hitungIzinBolos(idPegawai, dari, sampai) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const libur = getData(STORAGE_KEYS.LIBUR);
+            let izin = 0,
+                bolos = 0,
+                hadirLibur = 0;
+            const start = new Date(dari),
+                end = new Date(sampai);
+            const liburSet = new Set(libur);
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const tgl = formatDate(d);
+                const day = d.getDay();
+                if (liburSet.has(tgl)) { hadirLibur++; continue; }
+                if (day === 0 || day === 6) { bolos++; continue; }
+                const sudah = absen.some(a => a.pegawaiId === idPegawai && a.tanggal === tgl);
+                if (!sudah) izin++;
+            }
+            return { izin, bolos, hadirLibur };
+        }
+
+        function buatLaporan(idPegawai, dari, sampai) {
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const lembur = getData(STORAGE_KEYS.LEMBUR);
+            const pegawai = getPegawaiById(idPegawai);
+            if (!pegawai) { alert('Pegawai tidak ditemukan!'); return; }
+
+            const absenP = absen.filter(a => a.pegawaiId === idPegawai && a.tanggal >= dari && a.tanggal <= sampai);
+            const lemburP = lembur.filter(l => l.pegawaiId === idPegawai && l.tanggal >= dari && l.tanggal <= sampai);
+
+            let totalHadir = 0,
+                totalTelat = 0,
+                totalMenitTelat = 0;
+            absenP.forEach(a => {
+                if (a.status.includes('Hadir')) { totalHadir++;
+                    if (a.keterlambatan > 0) { totalTelat++;
+                        totalMenitTelat += a.keterlambatan; } }
+            });
+
+            const { izin, bolos, hadirLibur } = hitungIzinBolos(idPegawai, dari, sampai);
+            totalHadir += hadirLibur;
+
+            // data untuk detail
+            const detailIzin = [];
+            const detailBolos = [];
+            const detailLembur = [];
+            const detailTelat = [];
+
+            // kumpulkan detail
+            const liburSet = new Set(getData(STORAGE_KEYS.LIBUR));
+            const startD = new Date(dari),
+                endD = new Date(sampai);
+            const absenMap = {};
+            absenP.forEach(a => { absenMap[a.tanggal] = a; });
+
+            for (let d = new Date(startD); d <= endD; d.setDate(d.getDate() + 1)) {
+                const tgl = formatDate(d);
+                const day = d.getDay();
+                const isLibur = liburSet.has(tgl);
+                const a = absenMap[tgl];
+
+                if (isLibur) continue; // libur tidak dihitung sebagai izin/bolos
+
+                if (!a) {
+                    if (day === 0 || day === 6) {
+                        detailBolos.push({ tanggal: tgl, keterangan: 'Weekend' });
+                    } else {
+                        detailIzin.push({ tanggal: tgl });
+                    }
+                } else {
+                    if (a.keterlambatan > 0) {
+                        detailTelat.push({ tanggal: tgl, menit: a.keterlambatan });
+                    }
+                }
+            }
+
+            // lembur detail
+            lemburP.forEach(l => {
+                detailLembur.push({ tanggal: l.tanggal });
+            });
+
+            // === RENDER RINGKASAN ===
+            const ringkasan = document.getElementById('ringkasan-laporan');
+            ringkasan.innerHTML =
+                `
+                        <h3 style="font-size:0.95rem;margin-bottom:8px;">📊 Ringkasan Laporan — ${pegawai.nama}</h3>
+                        <div class="dash-grid" style="grid-template-columns:1fr 1fr;">
+                            <div class="dash-card clickable-card" data-detail="izin" style="border-left-color:var(--warning);">
+                                <div class="number orange">${izin}</div>
+                                <div class="label">Total Izin</div>
+                                <span class="badge-click">👆</span>
+                            </div>
+                            <div class="dash-card clickable-card" data-detail="bolos" style="border-left-color:var(--danger);">
+                                <div class="number red">${bolos}</div>
+                                <div class="label">Total Bolos</div>
+                                <span class="badge-click">👆</span>
+                            </div>
+                            <div class="dash-card clickable-card" data-detail="lembur" style="border-left-color:#9b59b6;">
+                                <div class="number" style="color:#9b59b6;">${lemburP.length}</div>
+                                <div class="label">Total Lembur</div>
+                                <span class="badge-click">👆</span>
+                            </div>
+                            <div class="dash-card clickable-card" data-detail="telat" style="border-left-color:#e67e22;">
+                                <div class="number orange">${totalTelat}</div>
+                                <div class="label">Total Keterlambatan</div>
+                                <span class="badge-click">👆</span>
+                            </div>
+                        </div>
+                        <div class="text-muted" style="font-size:0.85rem;margin-top:4px;">Total Hadir: ${totalHadir} | Total Menit Terlambat: ${totalMenitTelat}</div>
+                    `;
+
+            // Simpan data detail untuk modal
+            ringkasan._detailData = { izin: detailIzin, bolos: detailBolos, lembur: detailLembur, telat: detailTelat };
+
+            // Event click card
+            ringkasan.querySelectorAll('.clickable-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const type = this.dataset.detail;
+                    const data = ringkasan._detailData[type] || [];
+                    const labelMap = { izin: 'Izin', bolos: 'Bolos', lembur: 'Lembur', telat: 'Keterlambatan' };
+                    const title = `${labelMap[type]} — ${pegawai.nama}`;
+                    let body = '';
+                    if (!data.length) {
+                        body = '<p class="text-muted">Tidak ada data.</p>';
+                    } else {
+                        if (type === 'telat') {
+                            body = '<ul style="list-style:none;padding:0;">';
+                            data.forEach(item => {
+                                body +=
+                                    `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">📅 ${item.tanggal} — <strong>${item.menit} menit</strong></li>`;
+                            });
+                            body += '</ul>';
+                        } else {
+                            body = '<ul style="list-style:none;padding:0;">';
+                            data.forEach(item => {
+                                body +=
+                                `<li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">📅 ${item.tanggal}</li>`;
+                            });
+                            body += '</ul>';
+                        }
+                    }
+                    document.getElementById('modal-detail-title').textContent = title;
+                    document.getElementById('modal-detail-body').innerHTML = body;
+                    document.getElementById('modal-detail-laporan').style.display = 'flex';
+                });
+            });
+
+            // Detail absen
+            const detailContainer = document.getElementById('detail-laporan');
+            detailContainer.innerHTML = '<h3 style="font-size:0.95rem;margin-top:12px;">📋 Detail Absen</h3>';
+
+            // gabungkan data
+            const semua = [...absenP];
+            // tambahkan libur yang tidak diabsen
+            for (let d = new Date(startD); d <= endD; d.setDate(d.getDate() + 1)) {
+                const tgl = formatDate(d);
+                if (liburSet.has(tgl) && !absenP.some(a => a.tanggal === tgl)) {
+                    semua.push({ tanggal: tgl, pegawaiId: idPegawai, status: 'Hadir (Libur)', keterlambatan: 0, jam: '-' });
+                }
+            }
+            semua.sort((a, b) => a.tanggal.localeCompare(b.tanggal));
+
+            if (!semua.length) {
+                detailContainer.innerHTML += '<p class="text-muted">Tidak ada data absen.</p>';
+                return;
+            }
+            const table = document.createElement('table');
+            table.innerHTML =
+                `<thead><tr><th>Tanggal</th><th>Shift</th><th>Jam</th><th>Status</th><th>Keterlambatan</th></tr></thead><tbody></tbody>`;
+            const tbody = table.querySelector('tbody');
+            semua.forEach(a => {
+                const s = getShiftById(a.shiftId);
+                let cls = '';
+                if (a.status.includes('Hadir')) cls = a.status.includes('Libur') ? 'status-libur' : 'status-hadir';
+                else if (a.status.includes('Izin')) cls = 'status-izin';
+                else if (a.status.includes('Bolos')) cls = 'status-bolos';
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    `<td>${a.tanggal}</td><td>${s ? s.nama : '-'}</td><td>${a.jam || '-'}</td>
+                            <td class="${cls}">${a.status}</td>
+                            <td>${a.keterlambatan > 0 ? a.keterlambatan+' mnt' : '-'}</td>`;
+                tbody.appendChild(tr);
+            });
+            detailContainer.appendChild(table);
+        }
+
+        // ============================================================
+        //  IMPORT MANUAL
+        // ============================================================
+        function prosesImportManual() {
+            const tanggal = document.getElementById('import-tanggal').value;
+            const shiftId = document.getElementById('import-shift').value;
+            const raw = document.getElementById('import-data').value;
+            const duplicateAction = document.getElementById('import-duplicate-action').value;
+            if (!tanggal || !shiftId || !raw) { alert('Lengkapi semua field!'); return; }
+            const shift = getShiftById(shiftId);
+            if (!shift) { alert('Shift tidak valid!'); return; }
+
+            const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+            let berhasil = 0,
+                gagal = 0,
+                skipped = 0;
+            const errors = [];
+            const absen = getData(STORAGE_KEYS.ABSEN);
+            const lembur = getData(STORAGE_KEYS.LEMBUR);
+            const pegawaiList = getData(STORAGE_KEYS.PEGAWAI);
+
+            lines.forEach((line, idx) => {
+                const parts = line.split(',').map(s => s.trim());
+                if (parts.length < 2) { gagal++;
+                    errors.push(`Baris ${idx+1}: format salah`); return; }
+                const nama = parts[0];
+                const value = parts[1].toLowerCase();
+
+                // Cek apakah ini lembur
+                if (value === 'lembur') {
+                    const p = pegawaiList.find(p => p.nama.toLowerCase() === nama.toLowerCase());
+                    if (!p) { gagal++;
+                        errors.push(`Baris ${idx+1}: pegawai "${nama}" tidak ditemukan`); return; }
+                    // cek duplikat lembur
+                    const sudah = lembur.some(l => l.pegawaiId === p.id && l.tanggal === tanggal);
+                    if (sudah) { skipped++;
+                        errors.push(`Baris ${idx+1}: ${nama} sudah lembur`); return; }
+                    lembur.push({ id: Date.now() + '-' + idx + '-' + Math.random().toString(36).substr(2, 6), tanggal,
+                        pegawaiId: p.id });
+                    berhasil++;
+                    return;
+                }
+
+                // Absen biasa
+                let jam = value;
+                if (!jam.match(/^\d{1,2}:\d{2}$/)) { gagal++;
+                    errors.push(`Baris ${idx+1}: format jam salah "${jam}"`); return; }
+                const [h, m] = jam.split(':').map(Number);
+                if (h < 0 || h > 23 || m < 0 || m > 59) { gagal++;
+                    errors.push(`Baris ${idx+1}: jam tidak valid`); return; }
+                jam = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+
+                const p = pegawaiList.find(p => p.nama.toLowerCase() === nama.toLowerCase());
+                if (!p) { gagal++;
+                    errors.push(`Baris ${idx+1}: pegawai "${nama}" tidak ditemukan`); return; }
+
+                const existing = absen.find(a => a.pegawaiId === p.id && a.tanggal === tanggal);
+                if (existing) {
+                    if (duplicateAction === 'skip') { skipped++;
+                        errors.push(`Baris ${idx+1}: ${nama} sudah absen, dilewati`); return; }
+                    if (duplicateAction === 'replace') {
+                        const idx2 = absen.findIndex(a => a.id === existing.id);
+                        if (idx2 !== -1) absen.splice(idx2, 1);
+                    }
+                }
+
+                const { status, keterlambatan } = tentukanStatus(tanggal, jam, shift.jam);
+                absen.push({
+                    id: Date.now() + '-' + idx + '-' + Math.random().toString(36).substr(2, 6),
+                    tanggal,
+                    pegawaiId: p.id,
+                    shiftId,
+                    jam,
+                    status,
+                    keterlambatan
+                });
+                berhasil++;
+            });
+
+            if (berhasil > 0) {
+                saveData(STORAGE_KEYS.ABSEN, absen);
+                saveData(STORAGE_KEYS.LEMBUR, lembur);
+            }
+            let msg = `✅ Import selesai: ${berhasil} berhasil.`;
+            if (gagal) msg += ` ${gagal} gagal.`;
+            if (skipped) msg += ` ${skipped} dilewati.`;
+            if (errors.length) msg += `\n\n⚠️ ${errors.slice(0,5).join('\n')}`;
+            document.getElementById('import-status').innerHTML = `<p>${msg}</p>`;
+            if (berhasil) {
+                renderAbsenTable(tanggal, 'log-absen-hari-ini');
+                updateDashboard();
+                renderLemburLog();
+            }
+        }
+
+        // ============================================================
+        //  EDIT / HAPUS ABSEN
+        // ============================================================
+        let absenIdSedangDiedit = null;
+
+        function bukaEditAbsen(id) {
             const absen = getData(STORAGE_KEYS.ABSEN);
             const a = absen.find(x => x.id === id);
             if (!a) return;
@@ -936,453 +1445,72 @@ Ani, Lembur</div>
             document.getElementById('modal-edit-absen').style.display = 'flex';
         }
 
-        // =================================================================
-        // DASHBOARD
-        // =================================================================
-        function renderDashboard() {
-            const today = hariIni();
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
+        function hapusAbsen(id, tanggal, containerId) {
+            if (!confirm('Hapus data absen ini?')) return;
             const absen = getData(STORAGE_KEYS.ABSEN);
-            const shift = getData(STORAGE_KEYS.SHIFT);
-
-            // --- Gaji hari ini ---
-            const todayDate = new Date(today + 'T00:00:00');
-            const tglHariIni = todayDate.getDate(); // 1-31
-            const gajiPegawai = pegawai.filter(p => p.tanggal_gaji && parseInt(p.tanggal_gaji) === tglHariIni);
-            const gajiList = document.getElementById('gaji-list');
-            if (gajiPegawai.length) {
-                const nama = gajiPegawai.map(p => p.nama).join(', ');
-                gajiList.innerHTML = `🎉 <strong>${nama}</strong> terima gaji hari ini!`;
-            } else {
-                gajiList.innerHTML = 'Tidak ada pegawai yang gajian hari ini.';
-            }
-
-            // --- Ringkasan hari ini ---
-            const absenHari = absen.filter(a => a.tanggal === today);
-            let hadir = 0,
-                izin = 0,
-                bolos = 0,
-                terlambat = 0;
-            absenHari.forEach(a => {
-                if (a.status.includes('Hadir')) {
-                    hadir++;
-                    if (a.status.includes('Terlambat')) terlambat++;
-                } else if (a.status.includes('Izin')) izin++;
-                else if (a.status.includes('Bolos')) bolos++;
-            });
-            document.getElementById('dash-hadir').textContent = hadir;
-            document.getElementById('dash-izin').textContent = izin;
-            document.getElementById('dash-bolos').textContent = bolos;
-            document.getElementById('dash-terlambat').textContent = terlambat;
-
-            // --- Absen hari ini (tabel) ---
-            displayLogAbsen(today, 'log-absen-hari-ini-dashboard');
+            saveData(STORAGE_KEYS.ABSEN, absen.filter(a => a.id !== id));
+            renderAbsenTable(tanggal, containerId);
+            updateDashboard();
         }
 
-        // =================================================================
-        // LAPORAN
-        // =================================================================
-        function hitungIzinDanBolos(idPegawai, dari, sampai) {
-            const absen = getData(STORAGE_KEYS.ABSEN);
-            const libur = getData(STORAGE_KEYS.LIBUR);
-            let totalIzin = 0,
-                totalBolos = 0,
-                totalHadirLibur = 0;
-            const start = new Date(dari + 'T00:00:00');
-            const end = new Date(sampai + 'T00:00:00');
-            const cur = new Date(start);
-            while (cur <= end) {
-                const tgl = cur.toISOString().split('T')[0];
-                const hari = cur.getDay();
-                const isLibur = libur.includes(tgl);
-                const sudahAbsen = absen.some(a => a.pegawaiId === idPegawai && a.tanggal === tgl);
-                if (isLibur) {
-                    totalHadirLibur++;
-                } else if (!sudahAbsen) {
-                    if (hari >= 1 && hari <= 5) totalIzin++;
-                    else totalBolos++;
-                }
-                cur.setDate(cur.getDate() + 1);
-            }
-            return { totalIzin, totalBolos, totalHadirLibur };
+        // ============================================================
+        //  BACKUP / RESTORE / RESET
+        // ============================================================
+        function backupData() {
+            const all = {};
+            Object.keys(STORAGE_KEYS).forEach(k => { all[STORAGE_KEYS[k]] = getData(STORAGE_KEYS[k]); });
+            const ts = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_absensi_${ts}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            document.getElementById('backup-status').innerHTML = '✅ Backup berhasil!';
         }
 
-        function buatLaporan(idPegawai, dari, sampai) {
-            const absen = getData(STORAGE_KEYS.ABSEN);
-            const lembur = getData(STORAGE_KEYS.LEMBUR);
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-            const shift = getData(STORAGE_KEYS.SHIFT);
-            const p = pegawai.find(x => x.id === idPegawai);
-            if (!p) return alert('Pegawai tidak ditemukan!');
-
-            const absenPegawai = absen.filter(a => a.pegawaiId === idPegawai && a.tanggal >= dari && a.tanggal <= sampai);
-            const lemburPegawai = lembur.filter(l => l.pegawaiId === idPegawai && l.tanggal >= dari && l.tanggal <= sampai);
-
-            let totalHadir = 0,
-                totalKeterlambatan = 0,
-                totalTerlambat = 0;
-            absenPegawai.forEach(a => {
-                if (a.status.includes('Hadir')) {
-                    totalHadir++;
-                    if (a.keterlambatan > 0) {
-                        totalKeterlambatan += a.keterlambatan;
-                        totalTerlambat++;
-                    }
-                }
-            });
-
-            const { totalIzin, totalBolos, totalHadirLibur } = hitungIzinDanBolos(idPegawai, dari, sampai);
-            totalHadir += totalHadirLibur;
-            const totalLembur = lemburPegawai.length;
-
-            // Simpan data untuk modal detail
-            window._detailLaporan = {
-                idPegawai,
-                dari,
-                sampai,
-                absenPegawai,
-                lemburPegawai,
-                pegawai: p,
-                shift,
-                totalIzin,
-                totalBolos,
-                totalLembur,
-                totalKeterlambatan,
-                totalHadir,
-                totalTerlambat,
-                totalHadirLibur
+        function restoreData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const valid = Object.keys(STORAGE_KEYS).every(k => data.hasOwnProperty(STORAGE_KEYS[k]));
+                    if (!valid) { alert('File backup tidak valid!'); return; }
+                    Object.keys(STORAGE_KEYS).forEach(k => saveData(STORAGE_KEYS[k], data[STORAGE_KEYS[k]]));
+                    document.getElementById('backup-status').innerHTML = '✅ Restore berhasil!';
+                    document.getElementById('modal-restore').style.display = 'none';
+                    setTimeout(() => location.reload(), 800);
+                } catch (err) { alert('Error: ' + err.message); }
             };
-
-            // RENDER RINGKASAN
-            const ringkasan = document.getElementById('ringkasan-laporan');
-            ringkasan.innerHTML = `
-                <h3>📊 Ringkasan Laporan</h3>
-                <div class="report-summary">
-                    <div class="summary-item" data-detail="izin">
-                        <div>📝 Izin</div>
-                        <div class="summary-value">${totalIzin}</div>
-                    </div>
-                    <div class="summary-item" data-detail="bolos">
-                        <div>❌ Bolos</div>
-                        <div class="summary-value">${totalBolos}</div>
-                    </div>
-                    <div class="summary-item" data-detail="lembur">
-                        <div>⏰ Lembur (hari)</div>
-                        <div class="summary-value">${totalLembur}</div>
-                    </div>
-                    <div class="summary-item" data-detail="terlambat">
-                        <div>⏳ Keterlambatan</div>
-                        <div class="summary-value">${totalKeterlambatan} menit</div>
-                    </div>
-                </div>
-                <small style="color:#999;">Klik card untuk melihat detail</small>
-            `;
-
-            // Event listener untuk card ringkasan
-            document.querySelectorAll('.summary-item[data-detail]').forEach(el => {
-                el.addEventListener('click', function() {
-                    const type = this.dataset.detail;
-                    tampilkanDetailRingkasan(type);
-                });
-            });
-
-            // DETAIL TABEL
-            const detailContainer = document.getElementById('detail-laporan');
-            detailContainer.innerHTML = '<h3>📋 Detail Absen</h3>';
-
-            const semuaData = [...absenPegawai];
-            const libur = getData(STORAGE_KEYS.LIBUR);
-            const start = new Date(dari + 'T00:00:00');
-            const end = new Date(sampai + 'T00:00:00');
-            const cur = new Date(start);
-            while (cur <= end) {
-                const tgl = cur.toISOString().split('T')[0];
-                if (libur.includes(tgl) && !absenPegawai.some(a => a.tanggal === tgl && a.pegawaiId === idPegawai)) {
-                    semuaData.push({ tanggal: tgl, pegawaiId: idPegawai, status: 'Hadir (Libur)', keterlambatan: 0, jam: '-',
-                        shiftId: null });
-                }
-                cur.setDate(cur.getDate() + 1);
-            }
-            semuaData.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-
-            if (!semuaData.length) {
-                detailContainer.innerHTML += '<p>Tidak ada data.</p>';
-                return;
-            }
-
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead><tr><th>Tanggal</th><th>Shift</th><th>Jam</th><th>Status</th><th>Keterlambatan</th></tr></thead>
-                <tbody></tbody>
-            `;
-            const tbody = table.querySelector('tbody');
-            semuaData.forEach(a => {
-                const s = shift.find(x => x.id === a.shiftId);
-                let cls = '';
-                if (a.status.includes('Hadir')) cls = a.status.includes('Libur') ? 'status-libur' : 'status-hadir';
-                else if (a.status.includes('Izin')) cls = 'status-izin';
-                else if (a.status.includes('Bolos')) cls = 'status-bolos';
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${formatTanggal(a.tanggal)}</td>
-                    <td>${s ? s.nama : '-'}</td>
-                    <td>${a.jam || '-'}</td>
-                    <td class="${cls}">${a.status}</td>
-                    <td>${a.keterlambatan > 0 ? a.keterlambatan + ' menit' : '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-            detailContainer.appendChild(table);
+            reader.readAsText(file);
         }
 
-        // =================================================================
-        // DETAIL RINGKASAN (MODAL)
-        // =================================================================
-        function tampilkanDetailRingkasan(type) {
-            const data = window._detailLaporan;
-            if (!data) return alert('Tidak ada data laporan. Buat laporan terlebih dahulu.');
-
-            const modal = document.getElementById('modal-detail-ringkasan');
-            const title = document.getElementById('detail-ringkasan-title');
-            const body = document.getElementById('detail-ringkasan-body');
-
-            const pegawai = data.pegawai;
-            let items = [];
-
-            if (type === 'izin') {
-                title.textContent = `📝 Detail Izin - ${pegawai.nama}`;
-                // Cari hari-hari yang tidak absen (dianggap izin)
-                const libur = getData(STORAGE_KEYS.LIBUR);
-                const start = new Date(data.dari + 'T00:00:00');
-                const end = new Date(data.sampai + 'T00:00:00');
-                const cur = new Date(start);
-                while (cur <= end) {
-                    const tgl = cur.toISOString().split('T')[0];
-                    const hari = cur.getDay();
-                    const isLibur = libur.includes(tgl);
-                    const sudahAbsen = data.absenPegawai.some(a => a.tanggal === tgl);
-                    if (!isLibur && !sudahAbsen && hari >= 1 && hari <= 5) {
-                        items.push({ tanggal: tgl, keterangan: 'Izin (tidak masuk)' });
-                    }
-                    cur.setDate(cur.getDate() + 1);
-                }
-                if (!items.length) items.push({ tanggal: '-', keterangan: 'Tidak ada izin' });
-            } else if (type === 'bolos') {
-                title.textContent = `❌ Detail Bolos - ${pegawai.nama}`;
-                const libur = getData(STORAGE_KEYS.LIBUR);
-                const start = new Date(data.dari + 'T00:00:00');
-                const end = new Date(data.sampai + 'T00:00:00');
-                const cur = new Date(start);
-                while (cur <= end) {
-                    const tgl = cur.toISOString().split('T')[0];
-                    const hari = cur.getDay();
-                    const isLibur = libur.includes(tgl);
-                    const sudahAbsen = data.absenPegawai.some(a => a.tanggal === tgl);
-                    if (!isLibur && !sudahAbsen && (hari === 0 || hari === 6)) {
-                        items.push({ tanggal: tgl, keterangan: 'Bolos (akhir pekan)' });
-                    }
-                    cur.setDate(cur.getDate() + 1);
-                }
-                if (!items.length) items.push({ tanggal: '-', keterangan: 'Tidak ada bolos' });
-            } else if (type === 'lembur') {
-                title.textContent = `⏰ Detail Lembur - ${pegawai.nama}`;
-                if (data.lemburPegawai.length) {
-                    data.lemburPegawai.forEach(l => {
-                        items.push({ tanggal: l.tanggal, keterangan: 'Lembur' });
-                    });
-                } else {
-                    items.push({ tanggal: '-', keterangan: 'Tidak ada lembur' });
-                }
-            } else if (type === 'terlambat') {
-                title.textContent = `⏳ Detail Keterlambatan - ${pegawai.nama}`;
-                const telat = data.absenPegawai.filter(a => a.keterlambatan > 0);
-                if (telat.length) {
-                    telat.forEach(a => {
-                        items.push({ tanggal: a.tanggal, keterangan: `${a.keterlambatan} menit terlambat` });
-                    });
-                } else {
-                    items.push({ tanggal: '-', keterangan: 'Tidak ada keterlambatan' });
-                }
-            }
-
-            body.innerHTML = items.map(it =>
-                `<div class="log-item"><span>${formatTanggal(it.tanggal)}</span><span>${it.keterangan}</span></div>`
-            ).join('');
-
-            modal.style.display = 'flex';
+        function resetAllData() {
+            if (!confirm('⚠️ YAKIN? Semua data akan dihapus permanen!')) return;
+            Object.keys(STORAGE_KEYS).forEach(k => localStorage.removeItem(STORAGE_KEYS[k]));
+            initData();
+            alert('Data direset!');
+            location.reload();
         }
 
-        // =================================================================
-        // LOG LEMBUR 30 HARI
-        // =================================================================
-        function renderLogLembur30() {
-            const lembur = getData(STORAGE_KEYS.LEMBUR);
-            const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-            const today = new Date();
-            const thirtyDaysAgo = new Date(today);
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const tgl30 = thirtyDaysAgo.toISOString().split('T')[0];
-
-            const filtered = lembur.filter(l => l.tanggal >= tgl30);
-            filtered.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
-
-            const container = document.getElementById('log-lembur-30');
-            container.innerHTML = '';
-            if (!filtered.length) {
-                container.innerHTML = '<p>Tidak ada data lembur dalam 30 hari terakhir.</p>';
-                return;
-            }
-
-            filtered.forEach(l => {
-                const p = pegawai.find(x => x.id === l.pegawaiId);
-                const div = document.createElement('div');
-                div.className = 'lembur-log-item';
-                div.innerHTML = `
-                    <span class="tanggal">${formatTanggal(l.tanggal)}</span>
-                    <span class="nama">${p ? p.nama : 'Tidak diketahui'}</span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // =================================================================
-        // IMPORT MANUAL
-        // =================================================================
-        function prosesImportManual() {
-            const tanggal = document.getElementById('import-tanggal').value;
-            const shiftId = document.getElementById('import-shift').value;
-            const importData = document.getElementById('import-data').value;
-            const duplicateAction = document.getElementById('import-duplicate-action').value;
-
-            if (!tanggal || !shiftId || !importData) {
-                alert('Harap lengkapi semua field!');
-                return;
-            }
-            const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
-            if (!shift) return alert('Shift tidak valid!');
-
-            const lines = importData.split('\n');
-            let berhasil = 0,
-                gagal = 0,
-                skipped = 0;
-            const errors = [];
-            const absen = getData(STORAGE_KEYS.ABSEN);
-            const lembur = getData(STORAGE_KEYS.LEMBUR);
-            const pegawaiList = getData(STORAGE_KEYS.PEGAWAI);
-
-            lines.forEach((line, idx) => {
-                line = line.trim();
-                if (!line) return;
-                const parts = line.split(',');
-                if (parts.length < 2) {
-                    gagal++;
-                    errors.push(`Baris ${idx+1}: format tidak valid`);
-                    return;
-                }
-                const nama = parts[0].trim();
-                const jamRaw = parts.slice(1).join(',').trim();
-
-                // Cek apakah ini Lembur
-                const isLembur = jamRaw.toLowerCase() === 'lembur';
-
-                // Cari pegawai
-                const pegawai = pegawaiList.find(p => p.nama.toLowerCase() === nama.toLowerCase());
-                if (!pegawai) {
-                    gagal++;
-                    errors.push(`Baris ${idx+1}: pegawai "${nama}" tidak ditemukan`);
-                    return;
-                }
-
-                if (isLembur) {
-                    // -------- LEMBUR --------
-                    const sudahLembur = lembur.some(l => l.pegawaiId === pegawai.id && l.tanggal === tanggal);
-                    if (sudahLembur) {
-                        if (duplicateAction === 'skip') { skipped++; return; }
-                        if (duplicateAction === 'replace') {
-                            const idxDel = lembur.findIndex(l => l.pegawaiId === pegawai.id && l.tanggal === tanggal);
-                            if (idxDel !== -1) lembur.splice(idxDel, 1);
-                        }
-                    }
-                    lembur.push({
-                        id: Date.now().toString() + '-' + idx + '-' + Math.random().toString(36).substr(2, 6),
-                        tanggal,
-                        pegawaiId: pegawai.id
-                    });
-                    berhasil++;
-                } else {
-                    // -------- ABSEN --------
-                    let jam = jamRaw;
-                    if (!jam.match(/^\d{1,2}:\d{2}$/)) {
-                        gagal++;
-                        errors.push(`Baris ${idx+1}: format jam tidak valid - "${jam}"`);
-                        return;
-                    }
-                    const [h, m] = jam.split(':').map(Number);
-                    if (h < 0 || h > 23 || m < 0 || m > 59) {
-                        gagal++;
-                        errors.push(`Baris ${idx+1}: jam tidak valid - "${jam}"`);
-                        return;
-                    }
-                    jam = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
-
-                    // Cek duplikat absen
-                    const sudahAbsen = absen.some(a => a.pegawaiId === pegawai.id && a.tanggal === tanggal);
-                    if (sudahAbsen) {
-                        if (duplicateAction === 'skip') { skipped++; return; }
-                        if (duplicateAction === 'replace') {
-                            const idxDel = absen.findIndex(a => a.pegawaiId === pegawai.id && a.tanggal === tanggal);
-                            if (idxDel !== -1) absen.splice(idxDel, 1);
-                        }
-                    }
-
-                    const { status, keterlambatan } = tentukanStatus(tanggal, jam, shift.jam);
-                    absen.push({
-                        id: Date.now().toString() + '-' + idx + '-' + Math.random().toString(36).substr(2, 6),
-                        tanggal,
-                        pegawaiId: pegawai.id,
-                        shiftId,
-                        jam,
-                        status,
-                        keterlambatan
-                    });
-                    berhasil++;
-                }
-            });
-
-            if (berhasil > 0) {
-                saveData(STORAGE_KEYS.ABSEN, absen);
-                saveData(STORAGE_KEYS.LEMBUR, lembur);
-                let msg = `Import selesai: ${berhasil} data berhasil.`;
-                if (gagal > 0) msg += ` ${gagal} gagal.`;
-                if (skipped > 0) msg += ` ${skipped} dilewati.`;
-                if (errors.length) msg += '\n\n' + errors.slice(0, 5).join('\n');
-                document.getElementById('import-status').innerHTML =
-                    `<p class="${gagal === 0 ? 'status-hadir' : 'status-telat'}">${msg}</p>`;
-                displayLogAbsen(tanggal, 'log-absen-hari-ini');
-                renderLogLembur30();
-                renderDashboard();
-            } else {
-                document.getElementById('import-status').innerHTML =
-                    `<p class="status-bolos">Tidak ada data berhasil diimport. Error: ${errors.join(', ')}</p>`;
-            }
-        }
-
-        // =================================================================
-        // EVENT LISTENER DOMContentLoaded
-        // =================================================================
+        // ============================================================
+        //  DOM READY
+        // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            initializeData();
+            // Set dates
+            const t = today();
+            document.getElementById('absen-tanggal').value = t;
+            document.getElementById('import-tanggal').value = t;
+            document.getElementById('lembur-tanggal').value = t;
+            document.getElementById('cek-tanggal').value = t;
+            document.getElementById('laporan-dari').value = t;
+            document.getElementById('laporan-sampai').value = t;
+            document.getElementById('headerDate').textContent = t;
 
-            // Set default tanggal
-            const today = hariIni();
-            document.getElementById('absen-tanggal').value = today;
-            document.getElementById('import-tanggal').value = today;
-            document.getElementById('lembur-tanggal').value = today;
-            document.getElementById('cek-tanggal').value = today;
-            document.getElementById('laporan-dari').value = today;
-            document.getElementById('laporan-sampai').value = today;
-
-            // Load dropdown
+            // Load dropdowns
             loadPegawaiDropdown(document.getElementById('absen-pegawai'));
             loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
             loadPegawaiDropdown(document.getElementById('edit-pegawai'));
@@ -1390,48 +1518,46 @@ Ani, Lembur</div>
             loadShiftDropdown(document.getElementById('import-shift'));
             loadShiftDropdown(document.getElementById('edit-shift'));
 
-            // Tampilkan daftar master
-            displayPegawaiList();
-            displayShiftList();
-            displayLiburList();
+            // Render
+            renderPegawaiList();
+            renderShiftList();
+            renderLiburList();
+            renderAbsenTable(t, 'log-absen-hari-ini');
+            renderLemburLog();
+            updateDashboard();
 
-            // Dashboard
-            renderDashboard();
-
-            // Log absen hari ini
-            displayLogAbsen(today, 'log-absen-hari-ini');
-
-            // Log lembur 30 hari
-            renderLogLembur30();
-
-            // =============================================================
-            // TAB NAVIGATION
-            // =============================================================
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            // ===== NAV BOTTOM =====
+            document.querySelectorAll('.nav-bottom .tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-bottom .tab-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    const id = this.dataset.tab;
-                    document.getElementById(id).classList.add('active');
-
-                    // Refresh jika tab tertentu
-                    if (id === 'data-master') {
-                        displayPegawaiList();
-                        displayShiftList();
-                        displayLiburList();
-                        document.getElementById('pegawai-content').classList.remove('active');
-                        document.getElementById('shift-content').classList.remove('active');
-                        document.getElementById('libur-content').classList.remove('active');
+                    const tabId = this.dataset.tab;
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+                    // refresh if needed
+                    if (tabId === 'data-master') { renderPegawaiList();
+                        renderShiftList();
+                        renderLiburList(); }
+                    if (tabId === 'lembur') renderLemburLog();
+                    if (tabId === 'dashboard') updateDashboard();
+                    if (tabId === 'absen') {
+                        const t2 = document.getElementById('absen-tanggal').value || today();
+                        renderAbsenTable(t2, 'log-absen-hari-ini');
                     }
-                    if (id === 'dashboard') renderDashboard();
-                    if (id === 'lembur') renderLogLembur30();
+                    if (tabId === 'laporan') {
+                        // update datalist
+                        const list = document.getElementById('pegawai-datalist');
+                        list.innerHTML = '';
+                        getData(STORAGE_KEYS.PEGAWAI).forEach(p => {
+                            const o = document.createElement('option');
+                            o.value = p.nama;
+                            list.appendChild(o);
+                        });
+                    }
                 });
             });
 
-            // =============================================================
-            // TOGGLE EDIT DATA MASTER
-            // =============================================================
+            // ===== TOGGLE EDIT =====
             document.getElementById('toggle-pegawai').addEventListener('click', function() {
                 document.getElementById('pegawai-content').classList.toggle('active');
             });
@@ -1442,137 +1568,134 @@ Ani, Lembur</div>
                 document.getElementById('libur-content').classList.toggle('active');
             });
 
-            // =============================================================
-            // TAMBAH PEGAWAI (dengan tanggal gaji)
-            // =============================================================
+            // ===== TAMBAH PEGAWAI =====
             document.getElementById('tambah-pegawai').addEventListener('click', function() {
                 const nama = document.getElementById('pegawai-nama').value.trim();
-                const tglGaji = document.getElementById('pegawai-tanggal-gaji').value.trim();
-                if (!nama) return alert('Harap isi nama pegawai!');
-                if (tglGaji && (parseInt(tglGaji) < 1 || parseInt(tglGaji) > 31)) {
-                    return alert('Tanggal gajian harus antara 1–31!');
-                }
-                const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-                pegawai.push({ id: Date.now().toString(), nama, tanggal_gaji: tglGaji || null });
-                saveData(STORAGE_KEYS.PEGAWAI, pegawai);
+                const gajian = document.getElementById('pegawai-gajian').value.trim();
+                if (!nama) { alert('Masukkan nama!'); return; }
+                const data = getData(STORAGE_KEYS.PEGAWAI);
+                if (data.some(p => p.nama.toLowerCase() === nama.toLowerCase())) { alert('Nama sudah ada!'); return; }
+                const gajianNum = gajian ? parseInt(gajian) : null;
+                if (gajian && (isNaN(gajianNum) || gajianNum < 1 || gajianNum > 31)) { alert('Tanggal gajian harus 1-31!'); return; }
+                data.push({ id: Date.now().toString(), nama, tanggalGajian: gajianNum });
+                saveData(STORAGE_KEYS.PEGAWAI, data);
                 document.getElementById('pegawai-nama').value = '';
-                document.getElementById('pegawai-tanggal-gaji').value = '';
+                document.getElementById('pegawai-gajian').value = '';
+                renderPegawaiList();
                 loadPegawaiDropdown(document.getElementById('absen-pegawai'));
                 loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
                 loadPegawaiDropdown(document.getElementById('edit-pegawai'));
-                displayPegawaiList();
-                renderDashboard();
-                alert('Pegawai berhasil ditambahkan!');
+                updateDashboard();
             });
 
-            // HAPUS PEGAWAI
+            // ===== HAPUS PEGAWAI =====
             document.getElementById('hapus-pegawai').addEventListener('click', function() {
                 const sel = document.querySelector('input[name="selected-pegawai"]:checked');
-                if (!sel) return alert('Pilih pegawai!');
-                if (!confirm('Yakin hapus?')) return;
-                let pegawai = getData(STORAGE_KEYS.PEGAWAI);
-                pegawai = pegawai.filter(p => p.id !== sel.value);
-                saveData(STORAGE_KEYS.PEGAWAI, pegawai);
+                if (!sel) { alert('Pilih pegawai!'); return; }
+                if (!confirm('Hapus pegawai ini?')) return;
+                const data = getData(STORAGE_KEYS.PEGAWAI);
+                saveData(STORAGE_KEYS.PEGAWAI, data.filter(p => p.id !== sel.value));
+                renderPegawaiList();
                 loadPegawaiDropdown(document.getElementById('absen-pegawai'));
                 loadPegawaiDropdown(document.getElementById('lembur-pegawai'));
                 loadPegawaiDropdown(document.getElementById('edit-pegawai'));
-                displayPegawaiList();
-                renderDashboard();
-                alert('Pegawai dihapus!');
+                updateDashboard();
             });
 
-            // =============================================================
-            // SHIFT
-            // =============================================================
+            // ===== TAMBAH SHIFT =====
             document.getElementById('tambah-shift').addEventListener('click', function() {
                 const nama = document.getElementById('shift-nama').value.trim();
                 const jam = document.getElementById('shift-jam').value;
-                if (!nama || !jam) return alert('Lengkapi field!');
-                const shift = getData(STORAGE_KEYS.SHIFT);
-                shift.push({ id: Date.now().toString(), nama, jam });
-                saveData(STORAGE_KEYS.SHIFT, shift);
+                if (!nama || !jam) { alert('Lengkapi data shift!'); return; }
+                const data = getData(STORAGE_KEYS.SHIFT);
+                data.push({ id: Date.now().toString(), nama, jam });
+                saveData(STORAGE_KEYS.SHIFT, data);
                 document.getElementById('shift-nama').value = '';
                 document.getElementById('shift-jam').value = '';
+                renderShiftList();
                 loadShiftDropdown(document.getElementById('absen-shift'));
                 loadShiftDropdown(document.getElementById('import-shift'));
                 loadShiftDropdown(document.getElementById('edit-shift'));
-                displayShiftList();
-                alert('Shift ditambahkan!');
             });
 
+            // ===== HAPUS SHIFT =====
             document.getElementById('hapus-shift').addEventListener('click', function() {
                 const sel = document.querySelector('input[name="selected-shift"]:checked');
-                if (!sel) return alert('Pilih shift!');
-                if (!confirm('Yakin hapus?')) return;
-                let shift = getData(STORAGE_KEYS.SHIFT);
-                shift = shift.filter(s => s.id !== sel.value);
-                saveData(STORAGE_KEYS.SHIFT, shift);
+                if (!sel) { alert('Pilih shift!'); return; }
+                if (!confirm('Hapus shift?')) return;
+                const data = getData(STORAGE_KEYS.SHIFT);
+                saveData(STORAGE_KEYS.SHIFT, data.filter(s => s.id !== sel.value));
+                renderShiftList();
                 loadShiftDropdown(document.getElementById('absen-shift'));
                 loadShiftDropdown(document.getElementById('import-shift'));
                 loadShiftDropdown(document.getElementById('edit-shift'));
-                displayShiftList();
-                alert('Shift dihapus!');
             });
 
-            // =============================================================
-            // LIBUR
-            // =============================================================
+            // ===== TAMBAH LIBUR =====
             document.getElementById('tambah-libur').addEventListener('click', function() {
                 const tgl = document.getElementById('libur-tanggal').value;
-                if (!tgl) return alert('Pilih tanggal!');
-                const libur = getData(STORAGE_KEYS.LIBUR);
-                if (libur.includes(tgl)) return alert('Sudah tercatat!');
-                libur.push(tgl);
-                saveData(STORAGE_KEYS.LIBUR, libur);
+                if (!tgl) { alert('Pilih tanggal!'); return; }
+                const data = getData(STORAGE_KEYS.LIBUR);
+                if (data.includes(tgl)) { alert('Sudah ada!'); return; }
+                data.push(tgl);
+                saveData(STORAGE_KEYS.LIBUR, data);
                 document.getElementById('libur-tanggal').value = '';
-                displayLiburList();
-                renderDashboard();
-                alert('Libur ditambahkan!');
+                renderLiburList();
+                updateDashboard();
             });
 
+            // ===== HAPUS LIBUR =====
             document.getElementById('hapus-libur').addEventListener('click', function() {
                 const sel = document.querySelector('input[name="selected-libur"]:checked');
-                if (!sel) return alert('Pilih tanggal!');
-                if (!confirm('Yakin hapus?')) return;
-                let libur = getData(STORAGE_KEYS.LIBUR);
-                libur = libur.filter(l => l !== sel.value);
-                saveData(STORAGE_KEYS.LIBUR, libur);
-                displayLiburList();
-                renderDashboard();
-                alert('Libur dihapus!');
+                if (!sel) { alert('Pilih tanggal!'); return; }
+                if (!confirm('Hapus libur?')) return;
+                const data = getData(STORAGE_KEYS.LIBUR);
+                saveData(STORAGE_KEYS.LIBUR, data.filter(l => l !== sel.value));
+                renderLiburList();
+                updateDashboard();
             });
 
-            // =============================================================
-            // SIMPAN ABSEN
-            // =============================================================
+            // ===== SIMPAN ABSEN =====
             document.getElementById('simpan-absen').addEventListener('click', function() {
                 const tanggal = document.getElementById('absen-tanggal').value;
                 const pegawaiId = document.getElementById('absen-pegawai').value;
                 const shiftId = document.getElementById('absen-shift').value;
                 const jam = document.getElementById('absen-jam').value;
-                if (!tanggal || !pegawaiId || !shiftId || !jam) return alert('Lengkapi semua field!');
-
+                if (!tanggal || !pegawaiId || !shiftId || !jam) { alert('Lengkapi semua!'); return; }
                 const absen = getData(STORAGE_KEYS.ABSEN);
-                if (absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal)) {
-                    return alert('Pegawai sudah absen hari ini!');
-                }
-                const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
-                if (!shift) return alert('Shift tidak valid!');
-
+                if (absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal)) { alert('Sudah absen hari ini!');
+                    return; }
+                const shift = getShiftById(shiftId);
+                if (!shift) { alert('Shift tidak valid!'); return; }
                 const { status, keterlambatan } = tentukanStatus(tanggal, jam, shift.jam);
                 absen.push({ id: Date.now().toString(), tanggal, pegawaiId, shiftId, jam, status, keterlambatan });
                 saveData(STORAGE_KEYS.ABSEN, absen);
                 document.getElementById('absen-jam').value = '';
-                displayLogAbsen(tanggal, 'log-absen-hari-ini');
-                renderDashboard();
-                alert('Absen disimpan!');
+                renderAbsenTable(tanggal, 'log-absen-hari-ini');
+                updateDashboard();
             });
 
-            // =============================================================
-            // IMPORT MANUAL
-            // =============================================================
+            // ===== LEMBUR =====
+            document.getElementById('simpan-lembur').addEventListener('click', function() {
+                const tanggal = document.getElementById('lembur-tanggal').value;
+                const pegawaiId = document.getElementById('lembur-pegawai').value;
+                if (!tanggal || !pegawaiId) { alert('Lengkapi data!'); return; }
+                const absen = getData(STORAGE_KEYS.ABSEN);
+                if (!absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal)) { alert('Pegawai belum absen!');
+                    return; }
+                const lembur = getData(STORAGE_KEYS.LEMBUR);
+                if (lembur.some(l => l.pegawaiId === pegawaiId && l.tanggal === tanggal)) { alert('Sudah lembur!'); return; }
+                lembur.push({ id: Date.now().toString(), tanggal, pegawaiId });
+                saveData(STORAGE_KEYS.LEMBUR, lembur);
+                document.getElementById('lembur-tanggal').value = '';
+                document.getElementById('lembur-pegawai').value = '';
+                renderLemburLog();
+                updateDashboard();
+            });
+
+            // ===== IMPORT =====
             document.getElementById('toggle-import').addEventListener('click', function() {
-                document.getElementById('import-tanggal').value = document.getElementById('absen-tanggal').value;
+                document.getElementById('import-tanggal').value = document.getElementById('absen-tanggal').value || today();
                 document.getElementById('modal-import-manual').style.display = 'flex';
             });
             document.getElementById('proses-import').addEventListener('click', prosesImportManual);
@@ -1581,142 +1704,35 @@ Ani, Lembur</div>
                 document.getElementById('import-status').innerHTML = '';
             });
 
-            // =============================================================
-            // LEMBUR
-            // =============================================================
-            document.getElementById('simpan-lembur').addEventListener('click', function() {
-                const tanggal = document.getElementById('lembur-tanggal').value;
-                const pegawaiId = document.getElementById('lembur-pegawai').value;
-                if (!tanggal || !pegawaiId) return alert('Lengkapi semua field!');
-
-                const absen = getData(STORAGE_KEYS.ABSEN);
-                if (!absen.some(a => a.pegawaiId === pegawaiId && a.tanggal === tanggal)) {
-                    return alert('Pegawai belum absen di tanggal ini!');
-                }
-                const lembur = getData(STORAGE_KEYS.LEMBUR);
-                if (lembur.some(l => l.pegawaiId === pegawaiId && l.tanggal === tanggal)) {
-                    return alert('Sudah tercatat lembur!');
-                }
-                lembur.push({ id: Date.now().toString(), tanggal, pegawaiId });
-                saveData(STORAGE_KEYS.LEMBUR, lembur);
-                document.getElementById('lembur-tanggal').value = '';
-                document.getElementById('lembur-pegawai').value = '';
-                renderLogLembur30();
-                renderDashboard();
-                alert('Lembur disimpan!');
-            });
-
-            // =============================================================
-            // CEK ABSEN
-            // =============================================================
+            // ===== CEK ABSEN =====
             document.getElementById('tampilkan-absen').addEventListener('click', function() {
                 const tgl = document.getElementById('cek-tanggal').value;
-                displayLogAbsen(tgl, 'log-absen-tanggal');
+                renderAbsenTable(tgl, 'log-absen-tanggal');
             });
 
-            // =============================================================
-            // LAPORAN (dengan autocomplete)
-            // =============================================================
-            const laporanInput = document.getElementById('laporan-pegawai-input');
-            const laporanList = document.getElementById('laporan-pegawai-list');
-
-            function updateLaporanAutocomplete() {
-                const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-                laporanList.innerHTML = '';
-                pegawai.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.nama;
-                    opt.dataset.id = p.id;
-                    laporanList.appendChild(opt);
-                });
-            }
-            updateLaporanAutocomplete();
-
-            // Saat data master berubah, update autocomplete
-            const originalTambahPegawai = document.getElementById('tambah-pegawai').click;
-            document.getElementById('tambah-pegawai').addEventListener('click', function() {
-                setTimeout(updateLaporanAutocomplete, 100);
-            });
-            document.getElementById('hapus-pegawai').addEventListener('click', function() {
-                setTimeout(updateLaporanAutocomplete, 100);
-            });
-
+            // ===== LAPORAN =====
+            // Autocomplete: datalist diisi saat tab laporan dibuka
             document.getElementById('buat-laporan').addEventListener('click', function() {
-                const inputVal = laporanInput.value.trim();
-                if (!inputVal) return alert('Masukkan nama pegawai!');
-                const pegawai = getData(STORAGE_KEYS.PEGAWAI);
-                const p = pegawai.find(x => x.nama.toLowerCase() === inputVal.toLowerCase());
-                if (!p) return alert('Nama pegawai tidak ditemukan!');
+                const input = document.getElementById('laporan-pegawai-input').value.trim();
                 const dari = document.getElementById('laporan-dari').value;
                 const sampai = document.getElementById('laporan-sampai').value;
-                if (!dari || !sampai) return alert('Pilih rentang tanggal!');
-                buatLaporan(p.id, dari, sampai);
+                if (!input || !dari || !sampai) { alert('Lengkapi semua!'); return; }
+                const pegawai = getData(STORAGE_KEYS.PEGAWAI).find(p => p.nama.toLowerCase() === input.toLowerCase());
+                if (!pegawai) { alert('Pegawai tidak ditemukan! Coba ketik ulang.'); return; }
+                buatLaporan(pegawai.id, dari, sampai);
             });
 
-            // =============================================================
-            // BACKUP & RESTORE
-            // =============================================================
-            document.getElementById('backup-data').addEventListener('click', function() {
-                const allData = {};
-                Object.keys(STORAGE_KEYS).forEach(k => { allData[STORAGE_KEYS[k]] = getData(STORAGE_KEYS[k]); });
-                const ts = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `backup_absensi_${ts}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                document.getElementById('backup-status').innerHTML = '<p class="status-hadir">Backup berhasil!</p>';
-            });
-
-            document.getElementById('restore-data').addEventListener('click', function() {
-                document.getElementById('modal-restore').style.display = 'flex';
-            });
-
-            document.getElementById('proses-restore').addEventListener('click', function() {
-                const fileInput = document.getElementById('restore-file');
-                if (!fileInput.files.length) return alert('Pilih file backup!');
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        const valid = Object.keys(STORAGE_KEYS).every(k => data.hasOwnProperty(STORAGE_KEYS[k]));
-                        if (!valid) return alert('File backup tidak valid!');
-                        Object.keys(STORAGE_KEYS).forEach(k => saveData(STORAGE_KEYS[k], data[STORAGE_KEYS[k]]));
-                        document.getElementById('backup-status').innerHTML = '<p class="status-hadir">Restore berhasil!</p>';
-                        document.getElementById('modal-restore').style.display = 'none';
-                        setTimeout(() => location.reload(), 1000);
-                    } catch (err) { alert('Error: ' + err.message); }
-                };
-                reader.readAsText(fileInput.files[0]);
-            });
-
-            document.getElementById('reset-data').addEventListener('click', function() {
-                if (!confirm('Yakin reset semua data? TIDAK DAPAT DIBATALKAN!')) return;
-                Object.keys(STORAGE_KEYS).forEach(k => localStorage.removeItem(STORAGE_KEYS[k]));
-                initializeData();
-                alert('Data direset!');
-                location.reload();
-            });
-
-            // =============================================================
-            // EDIT ABSEN
-            // =============================================================
+            // ===== EDIT ABSEN =====
             document.getElementById('simpan-edit-absen').addEventListener('click', function() {
                 const pegawaiId = document.getElementById('edit-pegawai').value;
                 const shiftId = document.getElementById('edit-shift').value;
                 const jam = document.getElementById('edit-jam').value;
-                if (!pegawaiId || !shiftId || !jam) return alert('Lengkapi semua field!');
-
+                if (!pegawaiId || !shiftId || !jam) { alert('Lengkapi semua!'); return; }
                 const absen = getData(STORAGE_KEYS.ABSEN);
                 const a = absen.find(x => x.id === absenIdSedangDiedit);
-                if (!a) return alert('Data tidak ditemukan!');
-                const shift = getData(STORAGE_KEYS.SHIFT).find(s => s.id === shiftId);
-                if (!shift) return alert('Shift tidak valid!');
-
+                if (!a) { alert('Data tidak ditemukan!'); return; }
+                const shift = getShiftById(shiftId);
+                if (!shift) { alert('Shift invalid!'); return; }
                 const { status, keterlambatan } = tentukanStatus(a.tanggal, jam, shift.jam);
                 a.pegawaiId = pegawaiId;
                 a.shiftId = shiftId;
@@ -1725,17 +1741,24 @@ Ani, Lembur</div>
                 a.keterlambatan = keterlambatan;
                 saveData(STORAGE_KEYS.ABSEN, absen);
                 document.getElementById('modal-edit-absen').style.display = 'none';
-                alert('Data absen diperbarui!');
-                const tgl = document.getElementById('absen-tanggal').value;
-                displayLogAbsen(tgl, 'log-absen-hari-ini');
-                const tglCek = document.getElementById('cek-tanggal').value;
-                displayLogAbsen(tglCek, 'log-absen-tanggal');
-                renderDashboard();
+                const tgl = document.getElementById('absen-tanggal').value || today();
+                renderAbsenTable(tgl, 'log-absen-hari-ini');
+                updateDashboard();
             });
 
-            // =============================================================
-            // MODAL CLOSE
-            // =============================================================
+            // ===== BACKUP / RESTORE =====
+            document.getElementById('backup-data').addEventListener('click', backupData);
+            document.getElementById('restore-data').addEventListener('click', function() {
+                document.getElementById('modal-restore').style.display = 'flex';
+            });
+            document.getElementById('reset-data').addEventListener('click', resetAllData);
+            document.getElementById('proses-restore').addEventListener('click', function() {
+                const file = document.getElementById('restore-file').files[0];
+                if (!file) { alert('Pilih file!'); return; }
+                restoreData(file);
+            });
+
+            // ===== MODAL CLOSE =====
             document.querySelectorAll('.close-modal').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.modal').style.display = 'none';
@@ -1747,16 +1770,22 @@ Ani, Lembur</div>
                 });
             });
 
-            // =============================================================
-            // SERVICE WORKER
-            // =============================================================
+            // ===== SIMPAN DATA MASTER =====
+            document.getElementById('simpan-data-master').addEventListener('click', function() {
+                document.getElementById('pegawai-content').classList.remove('active');
+                document.getElementById('shift-content').classList.remove('active');
+                document.getElementById('libur-content').classList.remove('active');
+                updateDashboard();
+            });
+
+            // ===== SERVICE WORKER =====
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('./sw.js')
-                        .catch(err => console.log('SW registration failed:', err));
+                    navigator.serviceWorker.register('./sw.js').catch(function() {});
                 });
             }
         });
     </script>
+
 </body>
 </html>
